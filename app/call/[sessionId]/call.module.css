@@ -1,0 +1,193 @@
+.page {
+  min-height: 100dvh;
+  background: #1c1a16;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  position: relative;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #8a857a;
+  font-size: 15px;
+}
+
+.timer {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 18px;
+  border-radius: 16px;
+  font-size: 15px;
+  color: #ccc;
+  font-variant-numeric: tabular-nums;
+}
+.timerWarning {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+.timerValue {
+  font-weight: 700;
+  font-size: 18px;
+  color: #ef4444;
+  margin-left: 6px;
+}
+
+.avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.avatarWaiting {
+  opacity: 0.5;
+}
+
+.userName {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.userDetail {
+  font-size: 14px;
+  color: #8a857a;
+  margin: 0 0 12px;
+}
+.statusDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ade80;
+  margin-right: 6px;
+}
+.statusText {
+  font-size: 13px;
+  color: #4ade80;
+}
+.waitingText {
+  font-size: 14px;
+  color: #8a857a;
+  margin-top: 12px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-top: 16px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.controls {
+  position: absolute;
+  bottom: 60px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.controlBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.controlBtn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.controlBtnActive {
+  background: rgba(239, 68, 68, 0.3);
+}
+.hangupBtn {
+  width: 60px;
+  height: 60px;
+  background: #ef4444;
+  font-size: 24px;
+}
+.hangupBtn:hover {
+  background: #dc2626;
+}
+
+.cancelBtn {
+  margin-top: 24px;
+  padding: 10px 28px;
+  border-radius: 24px;
+  border: none;
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cancelBtn:hover {
+  background: rgba(239, 68, 68, 0.35);
+}
+
+.endedIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+.endedTitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.endedDuration {
+  font-size: 14px;
+  color: #8a857a;
+  margin: 0 0 4px;
+}
+.endedNote {
+  font-size: 13px;
+  color: #54514a;
+  margin: 0 0 24px;
+}
+.backBtn {
+  padding: 12px 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
