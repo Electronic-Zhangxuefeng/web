@@ -1,0 +1,143 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  font-size: 15px;
+}
+
+/* ── Header ── */
+.header {
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.headerInner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 17px;
+}
+.brandName {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+}
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.userName {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.signOutBtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.signOutBtn:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* ── Main ── */
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 48px 28px;
+}
+.welcome {
+  margin-bottom: 36px;
+}
+.welcomeTitle {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wave {
+  font-size: 32px;
+}
+.roleChip {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border: 1px solid;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+
+/* ── Cards ── */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-top: 3px solid;
+  border-radius: 12px;
+  padding: 28px;
+}
+.cardTitle {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+.cardDesc {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 18px;
+}
+.featureList {
+  margin: 0;
+  padding: 0 0 0 20px;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 2;
+}
+.featureList li {
+  padding-left: 4px;
+}

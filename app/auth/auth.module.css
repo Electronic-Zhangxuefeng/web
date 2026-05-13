@@ -1,0 +1,139 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px;
+  border: 1px solid var(--line);
+}
+
+.backLink {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-3);
+  text-decoration: none;
+  margin-bottom: 28px;
+}
+.backLink:hover {
+  color: var(--text);
+}
+
+.roleTag {
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.input {
+  padding: 12px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 8px;
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.input:focus {
+  border-color: var(--text);
+}
+
+.error {
+  font-size: 13px;
+  color: #dc2626;
+  margin: 0;
+}
+
+.submitBtn {
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid;
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.submitBtn:hover {
+  opacity: 0.9;
+}
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.switchMode {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.switchBtn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.switchRole {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 13px;
+}
+.switchRole a {
+  color: var(--text-3);
+  text-decoration: none;
+}
+.switchRole a:hover {
+  color: var(--text);
+}

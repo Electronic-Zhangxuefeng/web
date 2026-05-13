@@ -1,0 +1,121 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  padding: 24px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 40px 36px;
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.backLink {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-3);
+  text-decoration: none;
+  margin-bottom: 28px;
+  text-align: left;
+  width: 100%;
+}
+.backLink:hover {
+  color: var(--text);
+}
+
+.title {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 8px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--text-2);
+  margin: 0 0 32px;
+  line-height: 1.6;
+}
+
+.codeRow {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.codeInput {
+  width: 48px;
+  height: 56px;
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  background: var(--bg);
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.codeInput:focus {
+  border-color: var(--accent);
+}
+
+.error {
+  font-size: 13px;
+  color: #dc2626;
+  margin: 0 0 16px;
+}
+
+.verifyBtn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.verifyBtn:hover {
+  opacity: 0.9;
+}
+.verifyBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.resend {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-3);
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resendWait {
+  font-size: 13px;
+  color: var(--text-3);
+}

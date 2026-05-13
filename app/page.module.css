@@ -1,0 +1,598 @@
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+/* ── Header ── */
+.header {
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 0;
+  gap: 24px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 22px;
+}
+.brandText {
+}
+.name {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sep {
+  color: var(--text-3);
+  font-weight: 400;
+}
+.tag {
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.16em;
+  margin-top: 2px;
+}
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.nav a {
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.15s ease;
+}
+.nav a:hover {
+  color: var(--text);
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--text);
+  background: var(--text);
+  color: var(--bg);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.btn:hover {
+  background: transparent;
+  color: var(--text);
+}
+.btnGhost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line-2);
+}
+.btnGhost:hover {
+  background: var(--card);
+  border-color: var(--text);
+}
+.btnUmbrella {
+  background: var(--umbrella);
+  border-color: var(--umbrella);
+  color: #fff;
+}
+.btnUmbrella:hover {
+  background: transparent;
+  color: var(--umbrella);
+}
+
+/* ── Hero (split) ── */
+.heroWrap {
+  border-bottom: 1px solid var(--line);
+}
+.heroSplit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  padding: 56px 0 64px;
+}
+.side {
+  position: relative;
+  padding: 0;
+}
+.left {
+  padding-right: 28px;
+  border-right: 1px solid var(--line);
+}
+.right {
+  padding: 28px 0 28px 36px;
+  background: linear-gradient(
+    to right,
+    rgba(228, 236, 230, 0.55),
+    rgba(228, 236, 230, 0) 90%
+  );
+  border-radius: 0 12px 12px 0;
+  margin-right: -12px;
+}
+
+.who {
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.32em;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.who::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--text-3);
+}
+.whoRight {
+  color: var(--umbrella);
+}
+.whoRight::before {
+  background: var(--umbrella);
+}
+
+.word {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(56px, 7vw, 88px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  margin: 0 0 14px;
+}
+.wordRight {
+  color: var(--umbrella);
+}
+
+.hook {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(20px, 2.2vw, 26px);
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 22px;
+  letter-spacing: 0.02em;
+}
+.desc {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-2);
+  margin: 0 0 32px;
+  max-width: 460px;
+}
+.desc b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.ctaRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.meta {
+  margin-top: 28px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.meta b {
+  color: var(--text-2);
+  font-weight: 500;
+}
+.dot {
+  color: var(--line-2);
+}
+
+/* 右侧装饰小伞 */
+.umbrellaMark {
+  position: absolute;
+  top: 34px;
+  right: clamp(28px, 4vw, 56px);
+  width: 38px;
+  height: 38px;
+  opacity: 0.6;
+}
+.umbrellaMark svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Manifesto ── */
+.manifesto {
+  padding: clamp(80px, 10vw, 140px) 0;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+.manifestoQuote {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0 auto 36px;
+  max-width: 800px;
+  letter-spacing: 0.04em;
+}
+.manifestoQuote em {
+  font-style: normal;
+  color: var(--accent);
+  font-weight: 700;
+}
+.quoteMark {
+  color: var(--text-3);
+  font-family: var(--serif);
+  margin: 0 6px;
+}
+.manifestoBody {
+  max-width: 620px;
+  margin: 0 auto;
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.9;
+}
+.manifestoPair {
+  margin-top: 48px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  text-align: left;
+}
+.manifestoPair > div {
+  padding: 20px 24px;
+  border-left: 2px solid var(--line-2);
+}
+.manifestoPair > div b {
+  font-family: var(--serif);
+  font-size: 18px;
+  display: block;
+  margin-bottom: 6px;
+}
+.manifestoLeft b {
+  color: var(--accent);
+}
+.manifestoRight b {
+  color: var(--umbrella);
+}
+.manifestoLeft {
+  border-left-color: var(--accent) !important;
+}
+.manifestoRight {
+  border-left-color: var(--umbrella) !important;
+}
+.manifestoPair p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.75;
+}
+
+/* ── Section ── */
+.sectionBordered {
+  padding: 80px 0;
+  border-bottom: 1px solid var(--line);
+}
+.kicker {
+  font-size: 13px;
+  color: var(--text-3);
+  letter-spacing: 0.3em;
+  margin-bottom: 14px;
+}
+.h2 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(28px, 3.4vw, 40px);
+  line-height: 1.35;
+  margin: 0 0 12px;
+  letter-spacing: 0.02em;
+}
+.sectionSub {
+  color: var(--text-2);
+  font-size: 16px;
+  margin: 0 0 40px;
+  max-width: 680px;
+  line-height: 1.75;
+}
+
+/* ── Tiers ── */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.tier {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid transparent;
+  position: relative;
+}
+.tierMain {
+  background: var(--bg);
+  border-color: var(--accent);
+}
+.badge {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  letter-spacing: 0.06em;
+}
+.ord {
+  font-size: 12px;
+  color: var(--text-3);
+  letter-spacing: 0.3em;
+  margin-bottom: 14px;
+}
+.tier h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 14px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.tierMain h3 {
+  color: var(--accent);
+}
+.tierFormat {
+  margin: 0 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line-2);
+  font-size: 13px;
+  color: var(--text-2);
+  letter-spacing: 0.04em;
+}
+.tierMain .tierFormat {
+  color: var(--accent);
+  border-bottom-color: var(--accent-soft);
+}
+.tierDesc {
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 0 0 18px;
+}
+.tierMeta {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line-2);
+}
+.tierMeta span {
+  font-size: 12px;
+  color: var(--text-2);
+  background: rgba(0, 0, 0, 0.03);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.tierMain .tierMeta span {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ── Steps ── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.step {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 24px;
+}
+.stepN {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--accent);
+  font-weight: 500;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.step h4 {
+  margin: 0 0 8px;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.step p {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ── Launch ── */
+.launch {
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 16px;
+  padding: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+  margin-top: 32px;
+}
+.launchKicker {
+  font-size: 13px;
+  color: rgba(251, 250, 247, 0.5);
+  letter-spacing: 0.3em;
+  margin-bottom: 12px;
+}
+.launchH3 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(24px, 2.6vw, 32px);
+  line-height: 1.4;
+  margin: 0 0 14px;
+}
+.launchH3 em {
+  font-style: normal;
+  color: #ffb89c;
+}
+.launchP {
+  margin: 0;
+  color: rgba(251, 250, 247, 0.7);
+  font-size: 14px;
+  line-height: 1.75;
+}
+.launchDates {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+}
+.launchDates div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(251, 250, 247, 0.12);
+  color: rgba(251, 250, 247, 0.7);
+}
+.launchDates div:last-child {
+  border-bottom: none;
+}
+.launchDates b {
+  font-weight: 500;
+  color: #ffb89c;
+}
+
+/* ── CTA Section (replaces signup forms) ── */
+.ctaSection {
+  padding: 80px 0;
+}
+.ctaCard {
+  text-align: center;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 56px 36px;
+}
+.ctaTitle {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(28px, 3.4vw, 40px);
+  margin: 0 0 16px;
+  letter-spacing: 0.02em;
+}
+.ctaSub {
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 0 0 32px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.ctaButtons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ── Footer ── */
+.footer {
+  border-top: 1px solid var(--line);
+  padding: 36px 0;
+  color: var(--text-3);
+  font-size: 13px;
+}
+.footerInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.footer a {
+  color: var(--text-2);
+  text-decoration: none;
+}
+.footer a:hover {
+  color: var(--text);
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .nav a:not(.btn) {
+    display: none;
+  }
+  .heroSplit {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 40px 0 48px;
+  }
+  .left {
+    padding: 0 0 32px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .right {
+    padding: 16px 0 0 0;
+    margin-right: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .manifestoPair {
+    grid-template-columns: 1fr;
+  }
+  .tiers {
+    grid-template-columns: 1fr;
+  }
+  .steps {
+    grid-template-columns: 1fr 1fr;
+  }
+  .launch {
+    grid-template-columns: 1fr;
+    padding: 32px 28px;
+  }
+}

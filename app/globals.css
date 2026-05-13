@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-bg: #fbfaf7;
+  --color-card: #f3efe5;
+  --color-card-2: #ece7d8;
+  --color-line: #e5e0d2;
+  --color-line-2: #d8d2c0;
+  --color-text: #1c1a16;
+  --color-text-2: #54514a;
+  --color-text-3: #8a857a;
+  --color-accent: #b8472d;
+  --color-accent-soft: #f5e6df;
+  --color-umbrella: #3d5c4d;
+  --color-umbrella-soft: #e4ece6;
+}
+
+:root {
+  --bg: #fbfaf7;
+  --card: #f3efe5;
+  --card-2: #ece7d8;
+  --line: #e5e0d2;
+  --line-2: #d8d2c0;
+  --text: #1c1a16;
+  --text-2: #54514a;
+  --text-3: #8a857a;
+  --accent: #b8472d;
+  --accent-soft: #f5e6df;
+  --umbrella: #3d5c4d;
+  --umbrella-soft: #e4ece6;
+
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
