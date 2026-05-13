@@ -99,20 +99,8 @@ export default function VerifyPage() {
       if (verifyError) {
         setError(verifyError.message || "验证失败,请重试");
       } else {
-        const storedPassword = sessionStorage.getItem("verify_password");
         sessionStorage.removeItem("verify_email");
-        sessionStorage.removeItem("verify_password");
-        if (storedPassword) {
-          const { error: signInError } = await authClient.signIn.email({
-            email,
-            password: storedPassword,
-          });
-          if (!signInError) {
-            router.push("/dashboard");
-            return;
-          }
-        }
-        router.push("/auth");
+        router.replace("/dashboard");
       }
     } catch {
       setError("网络错误,请重试");

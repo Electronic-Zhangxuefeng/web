@@ -3,7 +3,13 @@ import type { NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4002";
+  const host = request.headers.get("host");
+
+  if (host === "wenjin-zhilu.com") {
+    const url = request.nextUrl.clone();
+    url.hostname = "www.wenjin-zhilu.com";
+    return NextResponse.redirect(url, 308);
+  }
 
   // Check session by calling the backend
   const isProtected = pathname.startsWith("/dashboard");
@@ -13,10 +19,11 @@ export async function proxy(request: NextRequest) {
     let isLoggedIn = false;
 
     try {
-      const sessionRes = await fetch(`${apiURL}/api/auth/get-session`, {
+      const sessionRes = await fetch(new URL("/api/auth/get-session", request.url), {
         headers: {
           cookie: request.headers.get("cookie") || "",
         },
+        cache: "no-store",
       });
 
       if (sessionRes.ok) {
@@ -29,7 +36,7 @@ export async function proxy(request: NextRequest) {
 
     // Protected routes: redirect to /auth if not logged in
     if (isProtected && !isLoggedIn) {
-      return NextResponse.redirect(new URL("/auth", request.url));
+      return NextResponse.redirect(new URL("/auth?mode=login", request.url));
     }
 
     // Auth pages: redirect to /dashboard if already logged in
@@ -42,5 +49,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/auth/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isPending && !session) {
-      router.push("/auth");
+      router.replace("/auth?mode=login");
     }
   }, [session, isPending, router]);
 
