@@ -68,8 +68,8 @@ function AuthForm() {
           }
           setError(signUpError.message || "注册失败,请重试");
         } else {
-          // Store email for verify page
           sessionStorage.setItem("verify_email", email);
+          sessionStorage.setItem("verify_password", password);
           router.push("/auth/verify");
         }
       } else {
@@ -85,6 +85,7 @@ function AuthForm() {
               type: "email-verification",
             });
             sessionStorage.setItem("verify_email", email);
+            sessionStorage.setItem("verify_password", password);
             router.push("/auth/verify");
           } else {
             setError(signInError.message || "登录失败,请检查邮箱和密码");
