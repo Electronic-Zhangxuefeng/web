@@ -57,6 +57,15 @@ function AuthForm() {
           ...({ role } as Record<string, string>),
         });
         if (signUpError) {
+          if (signUpError.code === "USER_ALREADY_EXISTS") {
+            await authClient.emailOtp.sendVerificationOtp({
+              email,
+              type: "email-verification",
+            });
+            sessionStorage.setItem("verify_email", email);
+            router.push("/auth/verify");
+            return;
+          }
           setError(signUpError.message || "注册失败,请重试");
         } else {
           // Store email for verify page
@@ -70,7 +79,16 @@ function AuthForm() {
           callbackURL: "/dashboard",
         });
         if (signInError) {
-          setError(signInError.message || "登录失败,请检查邮箱和密码");
+          if (signInError.message?.includes("verified") || signInError.code === "EMAIL_NOT_VERIFIED") {
+            await authClient.emailOtp.sendVerificationOtp({
+              email,
+              type: "email-verification",
+            });
+            sessionStorage.setItem("verify_email", email);
+            router.push("/auth/verify");
+          } else {
+            setError(signInError.message || "登录失败,请检查邮箱和密码");
+          }
         } else {
           router.push("/dashboard");
         }
