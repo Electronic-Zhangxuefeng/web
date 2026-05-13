@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
   }
 
   // Check session by calling the backend
-  const isProtected = pathname.startsWith("/dashboard");
+  const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/call");
   const isAuthPage = pathname.startsWith("/auth");
 
   if (isProtected || isAuthPage) {
