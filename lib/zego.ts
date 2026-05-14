@@ -1,11 +1,25 @@
-import { ZegoExpressEngine } from "zego-express-engine-webrtc";
+import type { ZegoExpressEngine } from "zego-express-engine-webrtc";
+
+type RoomUpdateType = "ADD" | "DELETE";
+type RoomUserInfo = { userID: string; userName?: string };
+type StreamInfo = { streamID: string; user?: RoomUserInfo };
+type ZegoEngineConstructor = new (appID: number, server: string | string[]) => ZegoExpressEngine;
 
 let engine: ZegoExpressEngine | null = null;
 let localStream: MediaStream | null = null;
 let publishStreamID: string | null = null;
+let currentRoomID: string | null = null;
+let peerUserID: string | null = null;
+const playingStreams = new Set<string>();
 
-export function createEngine(appID: number): ZegoExpressEngine {
+async function getZegoEngine(): Promise<ZegoEngineConstructor> {
+  const { ZegoExpressEngine } = await import("zego-express-engine-webrtc");
+  return ZegoExpressEngine;
+}
+
+export async function createEngine(appID: number): Promise<ZegoExpressEngine> {
   if (engine) return engine;
+  const ZegoExpressEngine = await getZegoEngine();
   engine = new ZegoExpressEngine(appID, "wss://webliveroom-api.zego.im/ws");
   return engine;
 }
@@ -14,19 +28,32 @@ export async function joinRoom(
   token: string,
   roomID: string,
   userID: string,
-  userName: string
+  userName: string,
+  expectedPeerUserID: string
 ): Promise<void> {
   if (!engine) throw new Error("Engine not created");
 
-  await engine.loginRoom(roomID, token, { userID, userName });
+  playingStreams.clear();
+  currentRoomID = roomID;
+  peerUserID = expectedPeerUserID;
+  publishStreamID = `${roomID}_${userID}`;
+  await engine.loginRoom(roomID, token, { userID, userName }, { userUpdate: true });
 
   localStream = await engine.createStream({ camera: { video: false, audio: true } });
-  publishStreamID = `${roomID}_${userID}`;
   await engine.startPublishingStream(publishStreamID, localStream);
 }
 
-export async function leaveRoom(roomID: string): Promise<void> {
+export async function leaveRoom(roomID?: string): Promise<void> {
   if (!engine) return;
+
+  for (const streamID of playingStreams) {
+    try {
+      engine.stopPlayingStream(streamID);
+    } catch {
+      // Stream may already have been removed by the SDK.
+    }
+  }
+  playingStreams.clear();
 
   if (localStream) {
     engine.destroyStream(localStream);
@@ -36,7 +63,11 @@ export async function leaveRoom(roomID: string): Promise<void> {
     engine.stopPublishingStream(publishStreamID);
     publishStreamID = null;
   }
-  await engine.logoutRoom(roomID);
+  currentRoomID = null;
+  peerUserID = null;
+  if (roomID) {
+    await engine.logoutRoom(roomID);
+  }
 }
 
 export function toggleMute(): boolean {
@@ -48,28 +79,64 @@ export function toggleMute(): boolean {
 }
 
 export function onRoomUserUpdate(
-  callback: (type: "ADD" | "DELETE", userList: { userID: string; userName?: string }[]) => void
+  callback: (type: RoomUpdateType, userList: RoomUserInfo[]) => void
 ): void {
   if (!engine) return;
-  engine.on("roomUserUpdate", (roomID, updateType, userList) => {
-    callback(updateType, userList);
+  engine.on("roomUserUpdate", (...args: [string, RoomUpdateType, RoomUserInfo[]]) => {
+    const [, updateType, userList] = args;
+    const remoteUsers = userList.filter((user) => user.userID === peerUserID);
+    if (remoteUsers.length > 0) {
+      callback(updateType, remoteUsers);
+    }
   });
 }
 
+function isPeerStream(stream: StreamInfo): boolean {
+  if (!stream.streamID || stream.streamID === publishStreamID) return false;
+  if (stream.user?.userID) return stream.user.userID === peerUserID;
+  return !!currentRoomID && !!peerUserID && stream.streamID === `${currentRoomID}_${peerUserID}`;
+}
+
 export function onRoomStreamUpdate(
-  callback: (type: "ADD" | "DELETE", streamList: any[]) => void
+  callback: (type: RoomUpdateType, streamList: StreamInfo[]) => void
 ): void {
   if (!engine) return;
-  engine.on("roomStreamUpdate", async (roomID, updateType, streamList) => {
+  engine.on("roomStreamUpdate", async (...args: [string, RoomUpdateType, StreamInfo[], string?]) => {
+    const [, updateType, streamList] = args;
+    const remoteStreams = streamList.filter(isPeerStream);
     if (updateType === "ADD") {
-      for (const stream of streamList) {
-        const remoteStream = await engine!.startPlayingStream(stream.streamID);
-        const audio = new Audio();
-        audio.srcObject = remoteStream;
-        audio.autoplay = true;
+      if (remoteStreams.length > 0) {
+        callback(updateType, remoteStreams);
+      }
+      for (const stream of remoteStreams) {
+        const streamID = stream.streamID;
+        if (playingStreams.has(streamID)) continue;
+        playingStreams.add(streamID);
+        try {
+          const remoteStream = await engine!.startPlayingStream(streamID);
+          const audio = new Audio();
+          audio.srcObject = remoteStream;
+          audio.autoplay = true;
+        } catch {
+          playingStreams.delete(streamID);
+        }
       }
     }
-    callback(updateType, streamList);
+    if (updateType === "DELETE") {
+      for (const stream of remoteStreams) {
+        const streamID = stream.streamID;
+        if (!playingStreams.has(streamID)) continue;
+        try {
+          engine!.stopPlayingStream(streamID);
+        } catch {
+          // Stream may already have been removed by the SDK.
+        }
+        playingStreams.delete(streamID);
+      }
+    }
+    if (updateType === "DELETE" && remoteStreams.length > 0) {
+      callback(updateType, remoteStreams);
+    }
   });
 }
 
@@ -81,4 +148,7 @@ export function destroy(): void {
   }
   localStream = null;
   publishStreamID = null;
+  currentRoomID = null;
+  peerUserID = null;
+  playingStreams.clear();
 }

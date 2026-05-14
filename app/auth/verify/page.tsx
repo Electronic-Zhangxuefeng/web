@@ -21,24 +21,19 @@ export default function VerifyPage() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return sessionStorage.getItem("verify_email") || "";
+  });
   const [countdown, setCountdown] = useState(60);
-  const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  useEffect(() => {
-    const storedEmail = sessionStorage.getItem("verify_email");
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, []);
+  const verifyingRef = useRef(false);
+  const canResend = countdown <= 0;
 
   useEffect(() => {
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      setCanResend(true);
     }
   }, [countdown]);
 
@@ -46,6 +41,39 @@ export default function VerifyPage() {
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
+
+  const verifyCode = useCallback(async (codeToVerify: string[]) => {
+    if (verifyingRef.current) return;
+
+    const fullCode = codeToVerify.join("");
+    if (fullCode.length !== 6) {
+      setError("请输入完整的 6 位验证码");
+      return;
+    }
+
+    verifyingRef.current = true;
+    setLoading(true);
+    setError("");
+
+    try {
+      const { error: verifyError } =
+        await authClient.emailOtp.verifyEmail({
+          email,
+          otp: fullCode,
+        });
+      if (verifyError) {
+        setError(verifyError.message || "验证失败,请重试");
+      } else {
+        sessionStorage.removeItem("verify_email");
+        router.replace("/dashboard");
+      }
+    } catch {
+      setError("网络错误,请重试");
+    } finally {
+      verifyingRef.current = false;
+      setLoading(false);
+    }
+  }, [email, router]);
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return;
@@ -55,9 +83,11 @@ export default function VerifyPage() {
     setCode(newCode);
     setError("");
 
-    // Auto-focus next
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
+    }
+    if (newCode.every((c) => c)) {
+      void verifyCode(newCode);
     }
   };
 
@@ -78,47 +108,18 @@ export default function VerifyPage() {
     const nextEmpty = newCode.findIndex((c) => !c);
     const focusIdx = nextEmpty === -1 ? 5 : nextEmpty;
     inputRefs.current[focusIdx]?.focus();
+
+    if (newCode.every((c) => c)) {
+      void verifyCode(newCode);
+    }
   };
 
-  const handleVerify = useCallback(async () => {
-    const fullCode = code.join("");
-    if (fullCode.length !== 6) {
-      setError("请输入完整的 6 位验证码");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
-
-    try {
-      const { error: verifyError } =
-        await authClient.emailOtp.verifyEmail({
-          email,
-          otp: fullCode,
-        });
-      if (verifyError) {
-        setError(verifyError.message || "验证失败,请重试");
-      } else {
-        sessionStorage.removeItem("verify_email");
-        router.replace("/dashboard");
-      }
-    } catch {
-      setError("网络错误,请重试");
-    } finally {
-      setLoading(false);
-    }
-  }, [code, email, router]);
-
-  // Auto-submit when all 6 digits entered
-  useEffect(() => {
-    if (code.every((c) => c)) {
-      handleVerify();
-    }
-  }, [code, handleVerify]);
+  const handleVerify = () => {
+    void verifyCode(code);
+  };
 
   const handleResend = async () => {
     if (!canResend) return;
-    setCanResend(false);
     setCountdown(60);
 
     try {

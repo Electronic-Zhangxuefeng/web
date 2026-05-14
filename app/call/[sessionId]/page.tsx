@@ -7,6 +7,15 @@ import * as zego from "@/lib/zego";
 import styles from "./call.module.css";
 
 type CallState = "loading" | "waiting" | "active" | "countdown" | "ended";
+type CallTokenResponse = {
+  token: string;
+  roomID: string;
+  userID: string;
+  peerUserID: string;
+  peerName?: string;
+  appID: number;
+  durationMins: number;
+};
 
 export default function CallPage() {
   const params = useParams();
@@ -21,8 +30,12 @@ export default function CallPage() {
   const [peerName, setPeerName] = useState("");
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const statusPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const roomIdRef = useRef("");
   const endedRef = useRef(false);
+  const callStartedRef = useRef(false);
+  const startReportInFlightRef = useRef(false);
+  const startReportSentRef = useRef(false);
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -30,25 +43,40 @@ export default function CallPage() {
     }
   }, [session, isPending, router]);
 
-  const endCall = useCallback(async () => {
+  const endCall = useCallback(async (options?: { reportEnd?: boolean }) => {
     if (endedRef.current) return;
     endedRef.current = true;
+    const shouldReportEnd = options?.reportEnd ?? true;
 
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
+    if (statusPollRef.current) {
+      clearInterval(statusPollRef.current);
+      statusPollRef.current = null;
+    }
 
-    await zego.leaveRoom(roomIdRef.current);
-    zego.destroy();
+    try {
+      await zego.leaveRoom(roomIdRef.current);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      zego.destroy();
+    }
 
-    await fetch("/api/call/end", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ sessionId }),
-    });
-
+    if (shouldReportEnd) {
+      try {
+        await fetch("/api/call/end", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ sessionId }),
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    }
     setCallState("ended");
   }, [sessionId]);
 
@@ -56,6 +84,10 @@ export default function CallPage() {
     if (isPending || !session) return;
 
     let cancelled = false;
+    endedRef.current = false;
+    callStartedRef.current = false;
+    startReportInFlightRef.current = false;
+    startReportSentRef.current = false;
 
     async function init() {
       const res = await fetch(`/api/call/token?sessionId=${sessionId}`, {
@@ -65,31 +97,23 @@ export default function CallPage() {
         router.replace("/dashboard");
         return;
       }
-      const data = await res.json();
+      const data = (await res.json()) as CallTokenResponse;
       if (cancelled) return;
 
       roomIdRef.current = data.roomID;
+      setElapsed(0);
       setDurationMins(data.durationMins);
+      setPeerName(data.peerName || "对方");
 
-      zego.createEngine(data.appID);
+      await zego.createEngine(data.appID);
+      if (cancelled) return;
 
-      zego.onRoomStreamUpdate((_type, _streamList) => {
-        // Audio playback handled inside the wrapper
-      });
+      const startCall = async () => {
+        if (cancelled || endedRef.current) return;
 
-      zego.onRoomUserUpdate(async (type, userList) => {
-        if (type === "ADD" && !cancelled) {
-          if (userList.length > 0) {
-            setPeerName(userList[0].userName ?? "对方");
-          }
+        if (!callStartedRef.current) {
+          callStartedRef.current = true;
           setCallState("active");
-
-          await fetch("/api/call/started", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ sessionId }),
-          });
 
           const startTime = Date.now();
           timerRef.current = setInterval(() => {
@@ -102,21 +126,69 @@ export default function CallPage() {
               setCallState("countdown");
             }
             if (remaining <= 0) {
-              endCall();
+              void endCall();
             }
           }, 1000);
         }
-        if (type === "DELETE" && !cancelled) {
-          endCall();
+
+        if (startReportSentRef.current || startReportInFlightRef.current) return;
+
+        startReportInFlightRef.current = true;
+        try {
+          const startedRes = await fetch("/api/call/started", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ sessionId }),
+          });
+          if (!startedRes.ok) {
+            throw new Error("Failed to mark call as started");
+          }
+          startReportSentRef.current = true;
+        } catch (error) {
+          console.error(error);
+        } finally {
+          startReportInFlightRef.current = false;
+        }
+      };
+
+      zego.onRoomStreamUpdate((type) => {
+        if (type === "ADD") void startCall();
+      });
+
+      zego.onRoomUserUpdate(async (type, userList) => {
+        if (type === "ADD" && !cancelled) {
+          if (userList.length > 0) {
+            setPeerName(userList[0].userName ?? "对方");
+          }
+          void startCall();
         }
       });
 
+      statusPollRef.current = setInterval(async () => {
+        if (cancelled || endedRef.current) return;
+        try {
+          const statusRes = await fetch(`/api/call/status/${sessionId}`, {
+            credentials: "include",
+          });
+          if (!statusRes.ok) return;
+          const statusData = await statusRes.json();
+          if (statusData.status === "ended") {
+            void endCall({ reportEnd: false });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }, 2000);
+
       const u = session!.user as { name?: string; email?: string };
       const userName = u.name || u.email || "用户";
-      await zego.joinRoom(data.token, data.roomID, data.userID, userName);
-      if (cancelled) return;
-
       setCallState("waiting");
+      await zego.joinRoom(data.token, data.roomID, data.userID, userName, data.peerUserID);
+      if (cancelled) {
+        await zego.leaveRoom(data.roomID);
+        zego.destroy();
+      }
     }
 
     init();
@@ -124,7 +196,8 @@ export default function CallPage() {
     return () => {
       cancelled = true;
       if (timerRef.current) clearInterval(timerRef.current);
-      zego.leaveRoom(roomIdRef.current);
+      if (statusPollRef.current) clearInterval(statusPollRef.current);
+      void zego.leaveRoom(roomIdRef.current);
       zego.destroy();
     };
   }, [isPending, session, sessionId, router, endCall]);
@@ -182,7 +255,7 @@ export default function CallPage() {
         <h2 className={styles.userName}>{peerName || "对方"}</h2>
         <p className={styles.waitingText}>等待对方加入...</p>
         <div className={styles.spinner} />
-        <button className={styles.cancelBtn} onClick={() => { endCall(); router.push("/dashboard"); }}>
+        <button className={styles.cancelBtn} onClick={() => { void endCall(); router.push("/dashboard"); }}>
           取消
         </button>
       </div>
@@ -217,7 +290,7 @@ export default function CallPage() {
         >
           {muted ? "🔇" : "🎤"}
         </button>
-        <button className={`${styles.controlBtn} ${styles.hangupBtn}`} onClick={endCall} title="挂断">
+        <button className={`${styles.controlBtn} ${styles.hangupBtn}`} onClick={() => void endCall()} title="挂断">
           📞
         </button>
         <button className={styles.controlBtn} title="扬声器">
