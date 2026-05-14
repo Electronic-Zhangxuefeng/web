@@ -3,42 +3,52 @@
 import { useState, useEffect } from "react";
 import styles from "./data-rotator.module.css";
 
+const CCTV_2023 =
+  "https://news.cctv.com/2023/06/30/ARTIqh7k2paDY6FGhERPosHV230630.shtml";
+const CCTV_2024 =
+  "https://news.cctv.com/2024/07/02/ARTII8DoXRNvwwt6D2Upi6lO240702.shtml";
+const THEPAPER =
+  "https://www.thepaper.cn/newsDetail_forward_1429824";
+const YOUTH_CN =
+  "https://edu.youth.cn/wzlb/202110/t20211019_13268478.htm";
+const PEOPLE_CN =
+  "http://edu.people.com.cn/n1/2016/0920/c1053-28725477.html";
+
 const INSIGHTS = [
   {
-    tag: "认知偏差",
-    big: "54%",
-    copy: "的大一新生在入学一年内反馈，所学专业的真实学习内容与高考前的认知存在显著偏差。",
-    src: "中国大学生学情调查 · 2024 届 (placeholder)",
+    tag: "如果重来",
+    big: "72%",
+    copy: "的人表示如果可以重来，想重新选择专业。填志愿时那几天的信息差，变成了四年的代价。",
+    src: "澎湃新闻 · 高考志愿填报调查",
+    url: THEPAPER,
   },
   {
     tag: "转专业冲动",
-    big: "39%",
-    copy: "的大学新生在大一结束前认真考虑过转专业——而其中多数人在填志愿前从未与本专业在读生交谈过。",
-    src: "麦可思《大学生培养质量年度报告》(placeholder)",
+    big: "79%",
+    copy: "的受访者大学时想过转专业——其中 60.2% 是因为感觉本专业发展前景不好。问题的根源，在入学前。",
+    src: "中国青年报 · 2,002 人社会调查 (2016)",
+    url: PEOPLE_CN,
   },
   {
-    tag: "时间窗口",
-    big: "4.6 天",
-    copy: "是家长在出分到提交志愿之间，平均能用于真正调研专业的时间。决策密度异常高，信息密度异常低。",
-    src: "上海市教育考试院公开数据 · 2025 (placeholder)",
+    tag: "不满意率",
+    big: "50.8%",
+    copy: "的大学生对所学专业满意度为“一般”或“不满意”。其中 46% 反馈学习内容与入学前的想象不一致。",
+    src: "中国青年网 · 10,545 名大学生问卷调查 (2021)",
+    url: YOUTH_CN,
   },
   {
-    tag: "家长盲区",
-    big: "18%",
-    copy: "是家长在填报前能准确描述目标专业核心课程与典型就业方向的比例——而他们正要替孩子做四年的决定。",
-    src: "家长志愿决策调研 · n=2,140 (placeholder)",
+    tag: "填报迷茫",
+    big: "79.5%",
+    copy: "的学生在填报志愿时感到迷茫。主因是对自己的喜好和特长不明确 (65.8%)，以及对专业了解有限 (55.4%)。",
+    src: "央视新闻 · 162 所高校 2,048 份问卷 (2023)",
+    url: CCTV_2023,
   },
   {
-    tag: "校友回望",
-    big: "78%",
-    copy: "的受访毕业生表示，“当时多问一位真正读这个专业的学长学姐”是他们最希望补上的环节。",
-    src: "校友信息差访谈 · n=520 (placeholder)",
-  },
-  {
-    tag: "价格落差",
+    tag: "价格乱象",
     big: "¥20,000",
-    copy: "是市面 IP 升学咨询的常见客单价——而你需要的，其实只是一个真正读过这个专业的人，花一顿饭的钱。",
-    src: "公开渠道整理 · 2025 (placeholder)",
+    copy: "是市面 IP 升学咨询的常见报价。央视调查显示志愿填报付费市场已接近 10 亿元——而你需要的，只是一个真正读过这个专业的人。",
+    src: "央视新闻 · 2024 高考志愿填报市场调查",
+    url: CCTV_2024,
   },
 ];
 
@@ -48,7 +58,7 @@ export default function DataRotator() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setI((x) => (x + 1) % INSIGHTS.length), 1500);
+    const t = setInterval(() => setI((x) => (x + 1) % INSIGHTS.length), 3500);
     return () => clearInterval(t);
   }, [paused]);
 
@@ -63,8 +73,8 @@ export default function DataRotator() {
       <div className={styles.topLabel}>
         <div className={styles.topLabelLeft}>
           <span className={styles.pulseDot} />
-          <span>信息差研究 · DATA SHEET</span>
-          <span className={styles.dash}>—</span>
+          <span>{"信息差研究 · DATA SHEET"}</span>
+          <span className={styles.dash}>{"—"}</span>
           <span className={styles.tagName}>{cur.tag}</span>
         </div>
         <div className={styles.counter}>
@@ -79,7 +89,12 @@ export default function DataRotator() {
         <div className={styles.bigNumber}>{cur.big}</div>
         <div className={styles.copyWrap}>
           <div className={styles.copy}>{cur.copy}</div>
-          <div className={styles.source}>来源：{cur.src}</div>
+          <div className={styles.source}>
+            {"来源："}
+            <a href={cur.url} target="_blank" rel="noopener noreferrer">
+              {cur.src} {"↗"}
+            </a>
+          </div>
         </div>
       </div>
 
@@ -89,7 +104,7 @@ export default function DataRotator() {
             key={idx}
             onClick={() => setI(idx)}
             className={styles.dotBtn}
-            aria-label={`数据 ${idx + 1}: ${s.tag}`}
+            aria-label={"数据 " + (idx + 1) + ": " + s.tag}
           >
             <span
               className={`${styles.dot} ${idx === i ? styles.dotActive : ""}`}
