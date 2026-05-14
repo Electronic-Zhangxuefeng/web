@@ -48,7 +48,7 @@ export default function DataRotator() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(() => setI((x) => (x + 1) % INSIGHTS.length), 4800);
+    const t = setInterval(() => setI((x) => (x + 1) % INSIGHTS.length), 1500);
     return () => clearInterval(t);
   }, [paused]);
 

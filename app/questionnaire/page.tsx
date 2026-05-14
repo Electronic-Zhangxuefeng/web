@@ -1,8 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Suspense } from "react";
 import styles from "./page.module.css";
+
+const STORAGE_KEY = "wjzl_questionnaire";
 
 // ─── Schema ─────────────────────────────────────────────────────────────────
 
@@ -40,17 +44,10 @@ const STEPS: Step[] = [
       },
       {
         id: "province",
-        type: "text",
-        q: "高考省份？",
-        required: true,
-        placeholder: "例：上海 / 江苏 / 浙江",
-      },
-      {
-        id: "score",
         type: "radio",
-        q: "当前分数 / 预估分数段？",
+        q: "高考地区？",
         required: true,
-        opts: ["660 +", "620 – 660", "580 – 620", "540 – 580", "< 540", "还没出分"],
+        opts: ["上海", "非上海"],
       },
       {
         id: "stage",
@@ -66,21 +63,25 @@ const STEPS: Step[] = [
     sub: "方向越具体，我们能给你的候选越对口。",
     qs: [
       {
-        id: "cities",
+        id: "major",
         type: "checkbox",
-        q: "意向城市？",
+        q: "意向专业类别？",
         required: true,
         hint: "可多选",
-        max: 5,
-        opts: ["上海", "北京", "江浙", "广深", "武汉", "成都", "港澳", "海外", "都可以"],
-      },
-      {
-        id: "targets",
-        type: "text",
-        q: "意向院校或专业方向？",
-        required: true,
-        placeholder: "例：上海交大 · 密院 / 复旦 · 中文 / 同济 · 建筑",
-        hint: "可填多个，用逗号分隔。也可以只写一类方向，比如「理工」「经管」。",
+        max: 3,
+        opts: [
+          "工学，如计算机、电子信息、土木、机械、交通工程等",
+          "理学，如数学、物理、化学、生物等",
+          "文学，如汉语言文学、英语、新闻传播等",
+          "商学，如经济学、金融学、财政学等",
+          "管理学，如工商管理、公共管理、会计、信息管理等",
+          "法学",
+          "医学",
+          "艺术学",
+          "教育学",
+          "农学",
+          "其他",
+        ],
       },
       {
         id: "focus",
@@ -424,7 +425,7 @@ function StepProgress({ step }: { step: number }) {
   );
 }
 
-function MatchResults({ answers }: { answers: Record<string, unknown> }) {
+function MatchResults() {
   return (
     <div className={styles.matchWrap}>
       <div className={styles.matchHeader}>
@@ -466,7 +467,6 @@ function MatchResults({ answers }: { answers: Record<string, unknown> }) {
           </div>
         ))}
 
-        {/* Overlay on blurred cards */}
         <div
           style={{
             position: "relative",
@@ -503,7 +503,7 @@ function MatchResults({ answers }: { answers: Record<string, unknown> }) {
         <p className={styles.matchCtaSub}>
           免费注册，查看完整学长学姐资料、历史评价，选择你最想聊的那位。
         </p>
-        <Link className={styles.matchCtaBtn} href="/auth">
+        <Link className={styles.matchCtaBtn} href={`/auth?redirect=${encodeURIComponent("/questionnaire?results=1")}`}>
           注册 / 登录 <span style={{ fontSize: 20 }}>→</span>
         </Link>
       </div>
@@ -513,11 +513,25 @@ function MatchResults({ answers }: { answers: Record<string, unknown> }) {
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
 
-export default function QuestionnairePage() {
+function QuestionnaireInner() {
+  const searchParams = useSearchParams();
+  const showResults = searchParams.get("results") === "1";
+
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setAnswers(parsed);
+        if (showResults) setSubmitted(true);
+      }
+    } catch {}
+  }, [showResults]);
 
   const cur = STEPS[step];
 
@@ -556,6 +570,7 @@ export default function QuestionnairePage() {
       setStep(step + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch {}
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -594,7 +609,7 @@ export default function QuestionnairePage() {
       </header>
 
       {submitted ? (
-        <MatchResults answers={answers} />
+        <MatchResults />
       ) : (
         <>
           {/* Progress */}
@@ -673,5 +688,13 @@ export default function QuestionnairePage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function QuestionnairePage() {
+  return (
+    <Suspense>
+      <QuestionnaireInner />
+    </Suspense>
   );
 }

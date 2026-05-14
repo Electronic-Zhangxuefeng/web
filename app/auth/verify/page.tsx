@@ -64,8 +64,10 @@ export default function VerifyPage() {
       if (verifyError) {
         setError(verifyError.message || "验证失败,请重试");
       } else {
+        const redirectTo = sessionStorage.getItem("auth_redirect") || "/dashboard";
         sessionStorage.removeItem("verify_email");
-        router.replace("/dashboard");
+        sessionStorage.removeItem("auth_redirect");
+        router.replace(redirectTo);
       }
     } catch {
       setError("网络错误,请重试");

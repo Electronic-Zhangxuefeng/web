@@ -12,6 +12,7 @@ function AuthForm() {
   const router = useRouter();
   const role = searchParams.get("role") === "mentor" ? "mentor" : "parent";
   const initialMode = searchParams.get("mode") === "login" ? "login" : "register";
+  const redirect = searchParams.get("redirect") || "/dashboard";
   const isMentor = role === "mentor";
 
   const [mode, setMode] = useState<"login" | "register">(initialMode);
@@ -54,7 +55,7 @@ function AuthForm() {
           email,
           password,
           name: email.split("@")[0],
-          callbackURL: "/dashboard",
+          callbackURL: redirect,
           ...({ role } as Record<string, string>),
         });
         if (signUpError) {
@@ -64,6 +65,7 @@ function AuthForm() {
               type: "email-verification",
             });
             sessionStorage.setItem("verify_email", email);
+            sessionStorage.setItem("auth_redirect", redirect);
             router.replace("/auth/verify");
             return;
           }
@@ -76,7 +78,7 @@ function AuthForm() {
         const { error: signInError } = await authClient.signIn.email({
           email,
           password,
-          callbackURL: "/dashboard",
+          callbackURL: redirect,
         });
         if (signInError) {
           if (signInError.message?.includes("verified") || signInError.code === "EMAIL_NOT_VERIFIED") {
@@ -85,12 +87,13 @@ function AuthForm() {
               type: "email-verification",
             });
             sessionStorage.setItem("verify_email", email);
+            sessionStorage.setItem("auth_redirect", redirect);
             router.replace("/auth/verify");
           } else {
             setError(signInError.message || "登录失败,请检查邮箱和密码");
           }
         } else {
-          router.replace("/dashboard");
+          router.replace(redirect);
         }
       }
     } catch {
