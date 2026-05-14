@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+function getSafeLocalRedirect(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return null;
+  }
+
+  return value;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host");
@@ -36,12 +44,16 @@ export async function proxy(request: NextRequest) {
 
     // Protected routes: redirect to /auth if not logged in
     if (isProtected && !isLoggedIn) {
-      return NextResponse.redirect(new URL("/auth?mode=login", request.url));
+      const url = new URL("/auth", request.url);
+      url.searchParams.set("mode", "login");
+      url.searchParams.set("redirect", `${request.nextUrl.pathname}${request.nextUrl.search}`);
+      return NextResponse.redirect(url);
     }
 
-    // Auth pages: redirect to /dashboard if already logged in
+    // Auth pages: redirect to the intended local destination if already logged in
     if (isAuthPage && isLoggedIn) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      const redirectTo = getSafeLocalRedirect(request.nextUrl.searchParams.get("redirect")) || "/dashboard";
+      return NextResponse.redirect(new URL(redirectTo, request.url));
     }
   }
 

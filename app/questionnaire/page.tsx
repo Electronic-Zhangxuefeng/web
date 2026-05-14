@@ -113,29 +113,9 @@ const STEPS: Step[] = [
     ],
   },
   {
-    title: "怎么找到你",
+    title: "还有什么想说的",
     sub: "完成问卷后，我们 24 小时内给你 3–5 位对口在读生。",
     qs: [
-      {
-        id: "tier",
-        type: "radio",
-        q: "你倾向哪一档服务？",
-        required: true,
-        opts: [
-          "¥30 起 · 文字一问",
-          "¥150 · 语音深聊（30 分钟）",
-          "¥300 · 综评模拟面试",
-          "还想再了解一下",
-        ],
-      },
-      {
-        id: "contact",
-        type: "text",
-        q: "邮箱或手机号？",
-        required: true,
-        placeholder: "we@example.com 或 138 ····· ····",
-        hint: "只用来通知你匹配结果，不会公开，也不会被学长学姐看到。",
-      },
       {
         id: "note",
         type: "textarea",
@@ -523,14 +503,18 @@ function QuestionnaireInner() {
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        setAnswers(parsed);
-        if (showResults) setSubmitted(true);
-      }
-    } catch {}
+    const timer = window.setTimeout(() => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setAnswers(parsed);
+          if (showResults) setSubmitted(true);
+        }
+      } catch {}
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, [showResults]);
 
   const cur = STEPS[step];

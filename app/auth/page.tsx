@@ -7,12 +7,21 @@ import { authClient } from "@/lib/auth-client";
 import { Suspense } from "react";
 import styles from "./auth.module.css";
 
+function getSafeLocalRedirect(value: string | null) {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return "/dashboard";
+  }
+
+  return value;
+}
+
 function AuthForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const role = searchParams.get("role") === "mentor" ? "mentor" : "parent";
   const initialMode = searchParams.get("mode") === "login" ? "login" : "register";
-  const redirect = searchParams.get("redirect") || "/dashboard";
+  const redirect = getSafeLocalRedirect(searchParams.get("redirect"));
+  const redirectQuery = encodeURIComponent(redirect);
   const isMentor = role === "mentor";
 
   const [mode, setMode] = useState<"login" | "register">(initialMode);
@@ -72,6 +81,7 @@ function AuthForm() {
           setError(signUpError.message || "注册失败,请重试");
         } else {
           sessionStorage.setItem("verify_email", email);
+          sessionStorage.setItem("auth_redirect", redirect);
           router.replace("/auth/verify");
         }
       } else {
@@ -208,9 +218,9 @@ function AuthForm() {
         {/* Switch role */}
         <div className={styles.switchRole}>
           {isMentor ? (
-            <Link href={`/auth?role=parent&mode=${mode}`}>我是家长 / 学生 →</Link>
+            <Link href={`/auth?role=parent&mode=${mode}&redirect=${redirectQuery}`}>我是家长 / 学生 →</Link>
           ) : (
-            <Link href={`/auth?role=mentor&mode=${mode}`}>我是学长 / 学姐 →</Link>
+            <Link href={`/auth?role=mentor&mode=${mode}&redirect=${redirectQuery}`}>我是学长 / 学姐 →</Link>
           )}
         </div>
       </div>
