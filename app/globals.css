@@ -1,46 +1,56 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #fbfaf7;
-  --color-card: #f3efe5;
-  --color-card-2: #ece7d8;
-  --color-line: #e5e0d2;
-  --color-line-2: #d8d2c0;
-  --color-text: #1c1a16;
-  --color-text-2: #54514a;
-  --color-text-3: #8a857a;
-  --color-accent: #b8472d;
-  --color-accent-soft: #f5e6df;
-  --color-umbrella: #3d5c4d;
-  --color-umbrella-soft: #e4ece6;
+  --color-bg: #F2E9D7;
+  --color-surface: #FAF3E2;
+  --color-cream: #FFF8E8;
+  --color-brown: #2E1F12;
+  --color-brown-soft: #5A4530;
+  --color-brown-faint: #897159;
+  --color-amber: #C8761F;
+  --color-amber-dark: #A35A14;
+  --color-rust: #8C3A1A;
+  --color-moss: #6B7A3F;
+  --color-rule: rgba(46, 31, 18, 0.14);
 }
 
 :root {
-  --bg: #fbfaf7;
-  --card: #f3efe5;
-  --card-2: #ece7d8;
-  --line: #e5e0d2;
-  --line-2: #d8d2c0;
-  --text: #1c1a16;
-  --text-2: #54514a;
-  --text-3: #8a857a;
-  --accent: #b8472d;
-  --accent-soft: #f5e6df;
-  --umbrella: #3d5c4d;
-  --umbrella-soft: #e4ece6;
+  --bg: #F2E9D7;
+  --surface: #FAF3E2;
+  --cream: #FFF8E8;
+  --brown: #2E1F12;
+  --brown-soft: #5A4530;
+  --brown-faint: #897159;
+  --amber: #C8761F;
+  --amber-dark: #A35A14;
+  --rust: #8C3A1A;
+  --moss: #6B7A3F;
+  --rule: rgba(46, 31, 18, 0.14);
 
-  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
-  --sans: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+  --sans: "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+  --italic: "Cormorant Garamond", "EB Garamond", Georgia, serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--brown);
   font-family: var(--sans);
   font-size: 16px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+}
+a { color: inherit; }
+button { font-family: inherit; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,118,31,0.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(200,118,31,0); }
 }

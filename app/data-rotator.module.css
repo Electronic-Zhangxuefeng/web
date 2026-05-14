@@ -1,0 +1,149 @@
+.rotator {
+  max-width: 1080px;
+  margin: 80px auto 0;
+  padding: 40px 48px;
+  background: var(--surface);
+  border-radius: 32px;
+  border: 1px solid var(--rule);
+  box-shadow: 0 4px 16px rgba(46, 31, 18, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.topLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--brown-faint);
+  letter-spacing: 0.18em;
+}
+
+.topLabelLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.dash {
+  opacity: 0.5;
+}
+
+.tagName {
+  color: var(--amber);
+  font-family: var(--italic);
+  font-style: italic;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.counter {
+  font-family: var(--italic);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--brown-soft);
+  letter-spacing: 0.04em;
+}
+
+.counterTotal {
+  opacity: 0.4;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 48px;
+  align-items: center;
+  animation: slideIn 0.65s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+.bigNumber {
+  font-family: var(--serif);
+  font-size: 140px;
+  font-weight: 700;
+  line-height: 0.95;
+  color: var(--amber);
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.copyWrap {}
+
+.copy {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--brown);
+  letter-spacing: 0.005em;
+}
+
+.source {
+  font-family: var(--italic);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--brown-faint);
+  margin-top: 20px;
+  letter-spacing: 0.04em;
+}
+
+.dots {
+  display: flex;
+  gap: 10px;
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px dashed var(--rule);
+  align-items: center;
+  justify-content: center;
+}
+
+.dotBtn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--rule);
+  transition: width 0.4s cubic-bezier(0.2, 0.7, 0.3, 1), background 0.25s;
+}
+
+.dotActive {
+  width: 36px;
+  background: var(--amber);
+}
+
+@media (max-width: 860px) {
+  .rotator {
+    margin: 48px 0 0;
+    padding: 28px 24px;
+    border-radius: 24px;
+  }
+  .content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .bigNumber {
+    font-size: 72px;
+  }
+  .copy {
+    font-size: 18px;
+  }
+}
