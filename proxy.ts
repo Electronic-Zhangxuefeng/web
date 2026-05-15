@@ -38,6 +38,25 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // Admin subdomain — rewrite root to /admin
+  if (host === "admin.wenjin-zhilu.com") {
+    if (pathname === "/" || pathname === "/admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/admin";
+      return NextResponse.rewrite(url);
+    }
+    // Other paths pass through (mainly /api/* which is excluded by matcher)
+  } else if (
+    pathname === "/admin" &&
+    (host === "www.wenjin-zhilu.com" || host === "wenjin-zhilu.com")
+  ) {
+    // On main domain, redirect /admin to admin subdomain
+    const url = request.nextUrl.clone();
+    url.hostname = "admin.wenjin-zhilu.com";
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
   // Check session by calling the backend
   const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/call");
   const isAuthPage = pathname.startsWith("/auth");
