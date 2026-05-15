@@ -1,13 +1,13 @@
-/* Parent landing — dashboard-aligned professional aesthetic, brick-red accent */
+/* Mentor recruitment landing — dashboard-aligned professional aesthetic */
 
 .shell {
   min-height: 100vh;
   background: #ffffff;
   color: #1f1f1f;
   font-family: var(--sans);
-  --accent: #b8472d;
-  --accent-soft: #fbeee9;
-  --accent-border: #ecd0c4;
+  --accent: #3d5c4d;
+  --accent-soft: #ecf2ee;
+  --accent-border: #c8d5cd;
 }
 
 /* Nav */
@@ -115,9 +115,6 @@
   margin: 0;
   letter-spacing: 0.005em;
 }
-.heroAccent {
-  color: var(--accent);
-}
 .heroSub {
   font-size: 17px;
   line-height: 1.75;
@@ -217,7 +214,7 @@
   margin: 0 auto;
 }
 
-/* Stat grid */
+/* Stat grid (why this matters) */
 .statGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -249,43 +246,45 @@
   color: #9a9a93;
 }
 
-/* School chips */
-.schoolWrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+/* Two-column block (platform protection) */
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
 }
-.schoolChip {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px 8px 8px;
-  background: #ffffff;
+.benefitCard {
   border: 1px solid #ececec;
-  border-radius: 999px;
-  font-size: 13px;
-  color: #1f1f1f;
+  border-radius: 10px;
+  padding: 22px 24px;
+  background: #ffffff;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
 }
-.schoolAbbr {
-  padding: 3px 8px;
-  background: var(--accent);
-  color: #ffffff;
-  border-radius: 999px;
-  font-size: 10px;
+.benefitIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
-.schoolDot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #c0bfb6;
+.benefitTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0 0 6px;
 }
-.schoolCount {
+.benefitDesc {
+  font-size: 13px;
+  line-height: 1.7;
   color: #6e6e68;
-  font-weight: 500;
-  font-size: 12px;
+  margin: 0;
 }
 
 /* Steps */
@@ -299,6 +298,7 @@
   border-radius: 10px;
   padding: 22px 20px;
   background: #ffffff;
+  position: relative;
 }
 .stepNum {
   font-family: var(--serif);
@@ -321,45 +321,76 @@
   margin: 0;
 }
 
-/* Reason cards */
-.reasonGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-.reasonCard {
-  border: 1px solid #ececec;
-  border-radius: 10px;
-  padding: 22px 24px;
-  background: #ffffff;
+/* Requirements */
+.reqRow {
   display: flex;
-  gap: 16px;
   align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f4f3ee;
 }
-.reasonIcon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+.reqRow:last-child {
+  border-bottom: none;
+}
+.reqMark {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
   background: var(--accent-soft);
   color: var(--accent);
   display: grid;
   place-items: center;
-  font-family: var(--serif);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 11px;
   flex-shrink: 0;
+  margin-top: 2px;
+  font-weight: 600;
 }
-.reasonTitle {
+.reqText {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1f1f1f;
+}
+.reqText em {
+  font-style: normal;
+  color: #6e6e68;
+  font-size: 13px;
+}
+
+/* FAQ */
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.faqItem {
+  border-bottom: 1px solid #ececec;
+  padding: 22px 0;
+}
+.faqItem:last-child {
+  border-bottom: none;
+}
+.faqQ {
   font-size: 15px;
   font-weight: 600;
   color: #1f1f1f;
-  margin: 0 0 6px;
+  margin: 0 0 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
-.reasonDesc {
-  font-size: 13px;
-  line-height: 1.7;
-  color: #6e6e68;
+.faqQ::before {
+  content: "Q";
+  font-family: var(--serif);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+.faqA {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #4a4a45;
   margin: 0;
+  padding-left: 22px;
 }
 
 /* Final CTA */
@@ -389,65 +420,22 @@
 
 /* Footer */
 .footer {
-  padding: 40px;
-  border-top: 1px solid #ececec;
-  background: #ffffff;
-}
-.footerTop {
-  max-width: 1080px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 40px;
-}
-.footerBrandBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.footerBrand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.footerDesc {
-  font-size: 13px;
-  color: #6e6e68;
-  line-height: 1.7;
-  margin: 0;
-  max-width: 320px;
-}
-.footerColTitle {
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #9a9a93;
-  margin: 0 0 14px;
-  font-weight: 600;
-}
-.footerCol {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.footerCol a {
-  font-size: 13px;
-  color: #4a4a45;
-  text-decoration: none;
-}
-.footerCol a:hover {
-  color: #1f1f1f;
-}
-.footerBottom {
-  max-width: 1080px;
-  margin: 32px auto 0;
-  padding-top: 20px;
+  padding: 32px 40px;
   border-top: 1px solid #ececec;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
   color: #9a9a93;
+  background: #ffffff;
+}
+.footer a {
+  color: #6e6e68;
+  text-decoration: none;
+  margin-left: 18px;
+}
+.footer a:hover {
+  color: #1f1f1f;
 }
 
 @media (max-width: 760px) {
@@ -470,10 +458,8 @@
     font-size: 24px;
   }
   .statGrid,
+  .benefitGrid,
   .stepsList {
-    grid-template-columns: 1fr;
-  }
-  .reasonGrid {
     grid-template-columns: 1fr;
   }
   .finalCta {
@@ -483,14 +469,8 @@
     font-size: 28px;
   }
   .footer {
-    padding: 32px 20px;
-  }
-  .footerTop {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .footerBottom {
     flex-direction: column;
     gap: 10px;
+    padding: 20px;
   }
 }

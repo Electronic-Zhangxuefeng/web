@@ -19,6 +19,25 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url, 308);
   }
 
+  // Mentor subdomain — rewrite root to /mentor landing
+  if (host === "mentor.wenjin-zhilu.com") {
+    if (pathname === "/" || pathname === "/mentor") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/mentor";
+      return NextResponse.rewrite(url);
+    }
+    // Other paths (/auth, /dashboard, /onboarding, /admin, /call, /api/*) pass through
+  } else if (
+    pathname === "/mentor" &&
+    (host === "www.wenjin-zhilu.com" || host === "wenjin-zhilu.com")
+  ) {
+    // On main domain, redirect /mentor to mentor subdomain
+    const url = request.nextUrl.clone();
+    url.hostname = "mentor.wenjin-zhilu.com";
+    url.pathname = "/";
+    return NextResponse.redirect(url, 308);
+  }
+
   // Check session by calling the backend
   const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/call");
   const isAuthPage = pathname.startsWith("/auth");
