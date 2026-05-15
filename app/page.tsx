@@ -150,6 +150,7 @@ export default function Home() {
           <a href="#how">如何参与</a>
           <a href="#why">为什么选择我们</a>
           <a href="#about">关于</a>
+          <Link href="/auth?mode=login">登录</Link>
           <Link className={styles.navBtn} href="/questionnaire">
             立刻开始 →
           </Link>

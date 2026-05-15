@@ -9,14 +9,15 @@ const apiURL =
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
-      {
-        source: "/api/auth/:path*",
-        destination: `${apiURL}/api/auth/:path*`,
-      },
-      {
-        source: "/api/call/:path*",
-        destination: `${apiURL}/api/call/:path*`,
-      },
+      { source: "/api/auth/:path*", destination: `${apiURL}/api/auth/:path*` },
+      { source: "/api/call/:path*", destination: `${apiURL}/api/call/:path*` },
+      { source: "/api/me/:path*", destination: `${apiURL}/api/me/:path*` },
+      { source: "/api/matches/:path*", destination: `${apiURL}/api/matches/:path*` },
+      { source: "/api/matches", destination: `${apiURL}/api/matches` },
+      { source: "/api/mentors/:path*", destination: `${apiURL}/api/mentors/:path*` },
+      { source: "/api/orders/:path*", destination: `${apiURL}/api/orders/:path*` },
+      { source: "/api/orders", destination: `${apiURL}/api/orders` },
+      { source: "/api/admin/:path*", destination: `${apiURL}/api/admin/:path*` },
     ];
   },
 };

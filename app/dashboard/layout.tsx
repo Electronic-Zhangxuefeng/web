@@ -1,0 +1,39 @@
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { Sidebar } from "./_components/Sidebar";
+import styles from "./dashboard.module.css";
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.replace("/auth?mode=login");
+    }
+  }, [session, isPending, router]);
+
+  if (isPending) {
+    return <div className={styles.loading}>加载中…</div>;
+  }
+  if (!session) {
+    return null;
+  }
+
+  const user = session.user as { name?: string; email?: string; role?: string };
+  const role = (user.role as "parent" | "mentor") || "parent";
+  const accent = role === "mentor" ? "#3d5c4d" : "#b8472d";
+  const side = role === "mentor" ? "指路 · 后台" : "问津 · 后台";
+
+  return (
+    <div className={styles.shell}>
+      <Sidebar role={role} name={user.name || ""} email={user.email || ""} accent={accent} side={side} />
+      <div className={styles.main} style={{ ["--accent" as string]: accent } as React.CSSProperties}>
+        {children}
+      </div>
+    </div>
+  );
+}
