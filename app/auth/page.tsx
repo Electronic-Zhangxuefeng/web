@@ -75,6 +75,7 @@ function AuthForm() {
             });
             sessionStorage.setItem("verify_email", email);
             sessionStorage.setItem("auth_redirect", redirect);
+            sessionStorage.setItem("auth_role", role);
             router.replace("/auth/verify");
             return;
           }
@@ -82,6 +83,7 @@ function AuthForm() {
         } else {
           sessionStorage.setItem("verify_email", email);
           sessionStorage.setItem("auth_redirect", redirect);
+          sessionStorage.setItem("auth_role", role);
           router.replace("/auth/verify");
         }
       } else {
@@ -98,6 +100,7 @@ function AuthForm() {
             });
             sessionStorage.setItem("verify_email", email);
             sessionStorage.setItem("auth_redirect", redirect);
+            sessionStorage.setItem("auth_role", role);
             router.replace("/auth/verify");
           } else {
             setError(signInError.message || "登录失败,请检查邮箱和密码");

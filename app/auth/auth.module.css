@@ -1,58 +1,64 @@
+/* Auth page — dashboard / landing aligned */
+
 .page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg);
+  background: #ffffff;
   padding: 24px;
+  font-family: var(--sans);
+  color: #1f1f1f;
 }
 
 .card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 40px 36px;
-  border: 1px solid var(--line);
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 36px 32px;
+  border: 1px solid #ececec;
 }
 
 .backLink {
   display: inline-block;
   font-size: 13px;
-  color: var(--text-3);
+  color: #9a9a93;
   text-decoration: none;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 .backLink:hover {
-  color: var(--text);
+  color: #1f1f1f;
 }
 
 .roleTag {
-  font-size: 12px;
-  letter-spacing: 0.2em;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .title {
   font-family: var(--serif);
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 600;
   margin: 0 0 8px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.005em;
+  color: #1f1f1f;
 }
 
 .subtitle {
   font-size: 14px;
-  color: var(--text-2);
+  color: #6e6e68;
   margin: 0 0 28px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .field {
@@ -64,76 +70,84 @@
 .label {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-2);
+  color: #1f1f1f;
 }
 
 .input {
-  padding: 12px 16px;
-  border: 1px solid var(--line-2);
-  border-radius: 8px;
-  background: var(--bg);
+  padding: 10px 12px;
+  border: 1px solid #dedcd2;
+  border-radius: 7px;
+  background: #ffffff;
   font-family: var(--sans);
   font-size: 14px;
-  color: var(--text);
+  color: #1f1f1f;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.12s ease;
 }
 .input:focus {
-  border-color: var(--text);
+  border-color: #1f1f1f;
 }
 
 .error {
   font-size: 13px;
-  color: #dc2626;
+  color: #a4391a;
   margin: 0;
+  padding: 8px 12px;
+  background: #fbeee9;
+  border: 1px solid #f0cfc2;
+  border-radius: 6px;
 }
 
 .submitBtn {
-  padding: 12px 20px;
+  padding: 11px 20px;
   border-radius: 8px;
-  border: 1px solid;
-  color: #fff;
+  border: none;
+  color: #ffffff;
   font-family: var(--sans);
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.12s ease;
+  margin-top: 6px;
 }
 .submitBtn:hover {
-  opacity: 0.9;
+  opacity: 0.92;
 }
 .submitBtn:disabled {
   opacity: 0.5;
-  cursor: default;
+  cursor: not-allowed;
 }
 
 .switchMode {
   text-align: center;
-  margin-top: 20px;
-  font-size: 14px;
-  color: var(--text-3);
+  margin-top: 22px;
+  font-size: 13px;
+  color: #6e6e68;
 }
 
 .switchBtn {
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
+  font-family: inherit;
 }
 
 .switchRole {
   text-align: center;
-  margin-top: 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #f0efe9;
   font-size: 13px;
 }
 .switchRole a {
-  color: var(--text-3);
+  color: #9a9a93;
   text-decoration: none;
 }
 .switchRole a:hover {
-  color: var(--text);
+  color: #1f1f1f;
 }

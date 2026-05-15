@@ -25,6 +25,10 @@ export default function VerifyPage() {
     if (typeof window === "undefined") return "";
     return sessionStorage.getItem("verify_email") || "";
   });
+  const [accent] = useState(() => {
+    if (typeof window === "undefined") return "#b8472d";
+    return sessionStorage.getItem("auth_role") === "mentor" ? "#3d5c4d" : "#b8472d";
+  });
   const [countdown, setCountdown] = useState(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const verifyingRef = useRef(false);
@@ -67,6 +71,7 @@ export default function VerifyPage() {
         const redirectTo = sessionStorage.getItem("auth_redirect") || "/dashboard";
         sessionStorage.removeItem("verify_email");
         sessionStorage.removeItem("auth_redirect");
+        sessionStorage.removeItem("auth_role");
         router.replace(redirectTo);
       }
     } catch {
@@ -135,7 +140,10 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className={styles.page}>
+    <div
+      className={styles.page}
+      style={{ ["--accent" as string]: accent } as React.CSSProperties}
+    >
       <div className={styles.card}>
         <Link href="/auth" className={styles.backLink}>
           ← 返回
