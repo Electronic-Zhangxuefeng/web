@@ -7,6 +7,7 @@ const apiURL =
     : "http://localhost:4002");
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   async rewrites() {
     return [
       { source: "/api/auth/:path*", destination: `${apiURL}/api/auth/:path*` },
