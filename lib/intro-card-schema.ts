@@ -125,13 +125,18 @@ export function mergeIntroCard(raw: unknown): IntroCard {
   if (!raw || typeof raw !== "object") return base;
   const result = introCardSchema.safeParse(raw);
   if (result.success) return result.data;
-  // partial merge
+  // Partial merge: re-parse each subtree so zod fills missing defaults.
   const r = raw as Record<string, unknown>;
+  const schoolEvalParsed = schoolEvalSchema.safeParse(r.schoolEval);
+  const personalExpParsed = personalExpSchema.safeParse(r.personalExp);
   return {
-    ...base,
-    _lastStep: typeof r._lastStep === "number" ? r._lastStep : 0,
-    displayInitial: typeof r.displayInitial === "string" ? r.displayInitial : "",
-    schoolEval: { ...base.schoolEval, ...(r.schoolEval as object || {}) } as SchoolEval,
-    personalExp: { ...base.personalExp, ...(r.personalExp as object || {}) } as PersonalExp,
+    _lastStep:
+      typeof r._lastStep === "number" && r._lastStep >= 0 && r._lastStep <= 3
+        ? r._lastStep
+        : 0,
+    displayInitial:
+      typeof r.displayInitial === "string" ? r.displayInitial.slice(0, 2) : "",
+    schoolEval: schoolEvalParsed.success ? schoolEvalParsed.data : base.schoolEval,
+    personalExp: personalExpParsed.success ? personalExpParsed.data : base.personalExp,
   };
 }
