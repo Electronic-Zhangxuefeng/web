@@ -67,15 +67,35 @@ export function Step4Proof({
 
       <div className={styles.fieldGroup}>
         <label className={styles.label}>上传证明（≤ 2 MB）</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) handleFile(f);
+        <label
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "10px 16px",
+            background: "#3d5c4d",
+            color: "#fff",
+            borderRadius: 8,
+            fontSize: 14,
+            cursor: "pointer",
+            width: "fit-content",
+            userSelect: "none",
           }}
-          style={{ fontSize: 13 }}
-        />
+        >
+          {preview ? "重新选择图片" : "选择图片上传"}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleFile(f);
+            }}
+            style={{ display: "none" }}
+          />
+        </label>
+        <span style={{ marginTop: 6, fontSize: 12, color: "#9a9a93" }}>
+          支持学生证 / 录取通知书 / 校园卡截图，JPG / PNG ≤ 2 MB
+        </span>
         {fileError && <span className={styles.errorText}>{fileError}</span>}
         {preview && (
           // eslint-disable-next-line @next/next/no-img-element
