@@ -4,15 +4,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { apiGet, apiSend, ApiError } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
+import { mergeIntroCard, type IntroCard } from "@/lib/intro-card-schema";
+import {
+  Step1Basic,
+  validateStep1,
+  type Step1Data,
+} from "@/app/onboarding/steps/Step1Basic";
+import { Step2SchoolEval, validateStep2 } from "@/app/onboarding/steps/Step2SchoolEval";
+import { Step3PersonalExp, validateStep3 } from "@/app/onboarding/steps/Step3PersonalExp";
+import {
+  Step4Proof,
+  validateStep4,
+  type Step4Data,
+} from "@/app/onboarding/steps/Step4Proof";
 import styles from "../dashboard.module.css";
-
-type IntroCard = {
-  whyMajor?: string;
-  regretOrSurprise?: string;
-  fitFor?: string;
-  notFitFor?: string;
-  afterGraduation?: string;
-};
 
 type MentorProfile = {
   userId: string;
@@ -25,7 +30,8 @@ type MentorProfile = {
   reviewStatus: "draft" | "pending" | "approved" | "rejected";
   reviewReason: string | null;
   reviewedAt: string | null;
-  introCard: IntroCard | null;
+  introCard: unknown;
+  proofImageUrl: string | null;
   ratingAvg: string;
   reviewsCount: number;
 };
@@ -67,93 +73,126 @@ export default function ProfilePage() {
 
 // ── Mentor ─────────────────────────────────────────────────────────────
 
-const INTRO_FIELDS: { key: keyof IntroCard; label: string; placeholder: string }[] = [
-  { key: "whyMajor", label: "为什么选这个专业？", placeholder: "回到当年填志愿的那天，告诉自己为什么是它。" },
-  { key: "regretOrSurprise", label: "最后悔 / 最惊喜的一件事？", placeholder: "如果没有这件事，你的体验会非常不同。" },
-  { key: "fitFor", label: "什么样的学生适合？", placeholder: "性格、兴趣、能力上的画像。" },
-  { key: "notFitFor", label: "什么样的学生不建议？", placeholder: "诚实点，不是所有人都适合。" },
-  { key: "afterGraduation", label: "大概的毕业去向？", placeholder: "本系学生毕业后会去哪里，做什么。" },
-];
-
 function MentorProfileEditor({ profile }: { profile: MentorProfile | null }) {
+  const { data: session } = authClient.useSession();
   const accent = "#3d5c4d";
-  const [school, setSchool] = useState(profile?.school || "");
-  const [college, setCollege] = useState(profile?.college || "");
-  const [major, setMajor] = useState(profile?.major || "");
-  const [year, setYear] = useState(profile?.year || "");
-  const [bio, setBio] = useState(profile?.bio || "");
-  const [tagsInput, setTagsInput] = useState((profile?.tags || []).join("，"));
-  const [intro, setIntro] = useState<IntroCard>(profile?.introCard || {});
-  const [proofDataUrl, setProofDataUrl] = useState<string | null>(null);
-  const [proofPreview, setProofPreview] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const status = profile?.reviewStatus || "draft";
+  const canSubmit = status === "draft" || status === "rejected";
+
+  const initialIntro = mergeIntroCard(profile?.introCard);
+  const userName = session?.user?.name || "";
+
+  const [basic, setBasic] = useState<Step1Data>({
+    school: profile?.school || "",
+    college: profile?.college || "",
+    major: profile?.major || "",
+    year: profile?.year || "",
+    displayInitial:
+      initialIntro.displayInitial ||
+      (userName.trim().charAt(0) || ""),
+    bio: profile?.bio || "",
+    tags: profile?.tags || [],
+  });
+  const [intro, setIntro] = useState<IntroCard>(initialIntro);
+  const [proof, setProof] = useState<Step4Data>({
+    proofDataUrl: null,
+    proofExistingUrl: profile?.proofImageUrl || null,
+  });
+  const [fileError, setFileError] = useState<string | null>(null);
+
+  const [errors, setErrors] = useState<{
+    s1: Partial<Record<keyof Step1Data, string>>;
+    s2: Record<string, string>;
+    s3: Record<string, string>;
+    s4: string | null;
+  }>({ s1: {}, s2: {}, s3: {}, s4: null });
+
+  const [saving, setSaving] = useState<"draft" | "submit" | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
-  const status = profile?.reviewStatus || "draft";
+  // 如果在 mount 时 session 还没就绪，等回来后给 displayInitial 兜底一次
+  useEffect(() => {
+    if (!userName) return;
+    setBasic((p) =>
+      p.displayInitial ? p : { ...p, displayInitial: userName.trim().charAt(0) || "" },
+    );
+  }, [userName]);
 
-  const handleFile = (file: File) => {
-    if (file.size > 3 * 1024 * 1024) {
-      setMsg({ kind: "err", text: "图片过大，请压缩到 2MB 以内" });
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = String(reader.result || "");
-      setProofDataUrl(url);
-      setProofPreview(url);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const collectBody = () => {
-    const tags = tagsInput
-      .split(/[,，\s]+/)
-      .map((t) => t.trim())
-      .filter(Boolean);
+  const buildBody = () => {
+    // 保留 _lastStep 原值，dashboard 不应改动 wizard 的进度记录
     const body: Record<string, unknown> = {
-      school,
-      college,
-      major,
-      year,
-      bio,
-      tags,
-      introCard: intro,
+      school: basic.school,
+      college: basic.college,
+      major: basic.major,
+      year: basic.year,
+      bio: basic.bio,
+      tags: basic.tags,
+      introCard: {
+        ...intro,
+        displayInitial: basic.displayInitial,
+      },
     };
-    if (proofDataUrl) body.proofImageUrl = proofDataUrl;
+    if (proof.proofDataUrl) body.proofImageUrl = proof.proofDataUrl;
     return body;
   };
 
-  const saveDraft = async () => {
-    setSaving(true);
-    setMsg(null);
-    try {
-      await apiSend("/api/mentors/me/profile", "PATCH", collectBody());
-      setMsg({ kind: "ok", text: "已保存草稿" });
-      setProofDataUrl(null);
-    } catch (e) {
-      setMsg({ kind: "err", text: e instanceof ApiError ? e.message : (e as Error).message });
-    } finally {
-      setSaving(false);
+  const handleProofChange = (dataUrl: string | null) => {
+    if (dataUrl === null) {
+      setFileError("图片过大，请压缩到 2 MB 以内");
+      return;
     }
+    setFileError(null);
+    setProof((p) => ({ ...p, proofDataUrl: dataUrl }));
   };
-  const submitForReview = async () => {
-    setSubmitting(true);
+
+  const onSaveDraft = async () => {
+    setSaving("draft");
     setMsg(null);
     try {
-      await apiSend("/api/mentors/me/profile", "PATCH", collectBody());
-      await apiSend("/api/mentors/me/profile/submit", "POST");
-      setMsg({ kind: "ok", text: "已提交审核，等待 admin 处理。" });
-      setProofDataUrl(null);
-      window.location.reload();
+      await apiSend("/api/mentors/me/profile", "PATCH", buildBody());
+      setMsg({ kind: "ok", text: "已保存草稿" });
+      // 已上传的图片转为 existing
+      if (proof.proofDataUrl) {
+        setProof({ proofDataUrl: null, proofExistingUrl: proof.proofDataUrl });
+      }
     } catch (e) {
       setMsg({ kind: "err", text: e instanceof ApiError ? e.message : (e as Error).message });
     } finally {
-      setSubmitting(false);
+      setSaving(null);
     }
   };
 
-  const canSubmit = status === "draft" || status === "rejected";
+  const onSubmit = async () => {
+    const e1 = validateStep1(basic);
+    const e2 = validateStep2(intro.schoolEval);
+    const e3 = validateStep3(intro.personalExp);
+    const e4 = validateStep4(proof, fileError);
+    setErrors({ s1: e1, s2: e2, s3: e3, s4: e4 });
+
+    const hasError =
+      Object.keys(e1).length > 0 ||
+      Object.keys(e2).length > 0 ||
+      Object.keys(e3).length > 0 ||
+      e4 !== null;
+    if (hasError) {
+      setMsg({ kind: "err", text: "请修正下面的红色字段" });
+      // 滚动到第一个错误（页面顶端的 alert 已经能告诉用户）
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    setSaving("submit");
+    setMsg(null);
+    try {
+      await apiSend("/api/mentors/me/profile", "PATCH", buildBody());
+      await apiSend("/api/mentors/me/profile/submit", "POST");
+      setMsg({ kind: "ok", text: "已提交审核，等待 admin 处理。" });
+      window.location.reload();
+    } catch (e) {
+      setMsg({ kind: "err", text: e instanceof ApiError ? e.message : (e as Error).message });
+      setSaving(null);
+    }
+  };
 
   return (
     <>
@@ -164,104 +203,79 @@ function MentorProfileEditor({ profile }: { profile: MentorProfile | null }) {
       </div>
       <div className={styles.content}>
         <h1 className={styles.pageTitle}>资料与审核</h1>
-        <p className={styles.pageSub}>填写学校信息、5 个介绍问答和学籍证明，提交后由 admin 审核。</p>
+        <p className={styles.pageSub}>
+          修改后点保存草稿即可。提交审核后由 admin 处理。
+        </p>
 
         <StatusBlock status={status} reason={profile?.reviewReason || null} accent={accent} />
 
         {msg && (
-          <div className={msg.kind === "ok" ? styles.alertOk : styles.alertBad} style={{ marginTop: 16 }}>
+          <div
+            className={msg.kind === "ok" ? styles.alertOk : styles.alertBad}
+            style={{ marginTop: 16 }}
+          >
             {msg.text}
           </div>
         )}
 
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>基本信息</h2>
-          <div className={styles.grid2} style={{ marginTop: 10 }}>
-            <Field label="学校" value={school} onChange={setSchool} placeholder="北京大学" />
-            <Field label="院系" value={college} onChange={setCollege} placeholder="电子学院" />
-            <Field label="专业" value={major} onChange={setMajor} placeholder="电子信息工程" />
-            <Field label="年级" value={year} onChange={setYear} placeholder="如：大三 / 研一 / 已毕业" />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>自我介绍</label>
-            <textarea
-              className={styles.textarea}
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              maxLength={2000}
-              placeholder="几句话介绍一下自己。家长会先看这段决定要不要约你。"
-            />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>标签</label>
-            <input
-              className={styles.input}
-              value={tagsInput}
-              onChange={(e) => setTagsInput(e.target.value)}
-              placeholder="保研，实习经验，转专业（用空格或逗号隔开，最多 8 个）"
-            />
-          </div>
-        </div>
-
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>5 个介绍问答</h2>
-          <p className={styles.pageSub}>每题不超过 300 字。这是家长决定是否约你的关键。</p>
-          {INTRO_FIELDS.map((f) => (
-            <div className={styles.field} key={f.key}>
-              <label className={styles.label}>{f.label}</label>
-              <textarea
-                className={styles.textarea}
-                value={intro[f.key] || ""}
-                maxLength={300}
-                placeholder={f.placeholder}
-                onChange={(e) => setIntro({ ...intro, [f.key]: e.target.value })}
-              />
-              <span className={styles.hint}>{(intro[f.key] || "").length} / 300</span>
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>学籍证明</h2>
-          <p className={styles.pageSub}>
-            上传学生证 / 录取通知书 / 校园卡截图，仅供 admin 审核可见。
-            {profile && status !== "draft" && "（已上传记录会自动保留，无需重传）"}
-          </p>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleFile(f);
-            }}
-            style={{ fontSize: 13 }}
+          <Step1Basic
+            data={basic}
+            errors={errors.s1}
+            onChange={(patch) => setBasic((p) => ({ ...p, ...patch }))}
           />
-          {proofPreview && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={proofPreview}
-              alt="证明预览"
-              style={{ marginTop: 12, maxWidth: 280, maxHeight: 200, border: "1px solid #ececec", borderRadius: 8 }}
-            />
-          )}
+        </div>
+
+        <div className={styles.section}>
+          <Step2SchoolEval
+            data={intro.schoolEval}
+            errors={errors.s2}
+            onChange={(patch) =>
+              setIntro((p) => ({ ...p, schoolEval: { ...p.schoolEval, ...patch } }))
+            }
+          />
+        </div>
+
+        <div className={styles.section}>
+          <Step3PersonalExp
+            data={intro.personalExp}
+            errors={errors.s3}
+            onChange={(patch) =>
+              setIntro((p) => ({ ...p, personalExp: { ...p.personalExp, ...patch } }))
+            }
+          />
+        </div>
+
+        <div className={styles.section}>
+          <Step4Proof
+            basic={basic}
+            intro={intro}
+            proof={proof}
+            fileError={fileError || errors.s4}
+            onProofChange={handleProofChange}
+          />
         </div>
 
         <div className={styles.section} style={{ display: "flex", gap: 10 }}>
           <button
             className={`${styles.btn} ${styles.btnGhost}`}
-            onClick={saveDraft}
-            disabled={saving || submitting}
+            onClick={onSaveDraft}
+            disabled={saving !== null}
           >
-            {saving ? "保存中…" : "保存草稿"}
+            {saving === "draft" ? "保存中…" : "保存草稿"}
           </button>
           {canSubmit && (
             <button
               className={`${styles.btn} ${styles.btnPrimary}`}
               style={{ background: accent }}
-              onClick={submitForReview}
-              disabled={saving || submitting}
+              onClick={onSubmit}
+              disabled={saving !== null}
             >
-              {submitting ? "提交中…" : status === "rejected" ? "重新提交审核" : "提交审核"}
+              {saving === "submit"
+                ? "提交中…"
+                : status === "rejected"
+                ? "重新提交审核"
+                : "提交审核"}
             </button>
           )}
         </div>
@@ -270,29 +284,6 @@ function MentorProfileEditor({ profile }: { profile: MentorProfile | null }) {
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-}) {
-  return (
-    <div className={styles.field}>
-      <label className={styles.label}>{label}</label>
-      <input
-        className={styles.input}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-      />
-    </div>
-  );
-}
 
 function StatusBlock({
   status,
