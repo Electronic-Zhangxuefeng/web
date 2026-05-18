@@ -16,6 +16,7 @@ export async function proxy(request: NextRequest) {
   if (host === "wenjin-zhilu.com") {
     const url = request.nextUrl.clone();
     url.hostname = "www.wenjin-zhilu.com";
+    url.port = "";
     return NextResponse.redirect(url, 308);
   }
 
@@ -34,6 +35,7 @@ export async function proxy(request: NextRequest) {
     // On main domain, redirect /mentor to mentor subdomain
     const url = request.nextUrl.clone();
     url.hostname = "mentor.wenjin-zhilu.com";
+    url.port = "";
     url.pathname = "/";
     return NextResponse.redirect(url, 308);
   }
@@ -53,6 +55,7 @@ export async function proxy(request: NextRequest) {
     // On main domain, redirect /admin to admin subdomain
     const url = request.nextUrl.clone();
     url.hostname = "admin.wenjin-zhilu.com";
+    url.port = "";
     url.pathname = "/";
     return NextResponse.redirect(url, 308);
   }
@@ -83,6 +86,7 @@ export async function proxy(request: NextRequest) {
     // Protected routes: redirect to /auth if not logged in
     if (isProtected && !isLoggedIn) {
       const url = new URL("/auth", request.url);
+      url.port = "";
       url.searchParams.set("mode", "login");
       url.searchParams.set("redirect", `${request.nextUrl.pathname}${request.nextUrl.search}`);
       return NextResponse.redirect(url);
@@ -91,7 +95,9 @@ export async function proxy(request: NextRequest) {
     // Auth pages: redirect to the intended local destination if already logged in
     if (isAuthPage && isLoggedIn) {
       const redirectTo = getSafeLocalRedirect(request.nextUrl.searchParams.get("redirect")) || "/dashboard";
-      return NextResponse.redirect(new URL(redirectTo, request.url));
+      const url = new URL(redirectTo, request.url);
+      url.port = "";
+      return NextResponse.redirect(url);
     }
   }
 
