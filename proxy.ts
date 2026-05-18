@@ -9,9 +9,22 @@ function getSafeLocalRedirect(value: string | null) {
   return value;
 }
 
+function getPublicOrigin(request: NextRequest) {
+  const host =
+    request.headers.get("x-forwarded-host") ||
+    request.headers.get("host") ||
+    request.nextUrl.host;
+  const proto =
+    request.headers.get("x-forwarded-proto") ||
+    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
+
+  return `${proto.split(",")[0]}://${host.split(",")[0]}`;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const host = request.headers.get("host");
+  const publicOrigin = getPublicOrigin(request);
 
   if (host === "wenjin-zhilu.com") {
     const url = request.nextUrl.clone();
@@ -77,7 +90,7 @@ export async function proxy(request: NextRequest) {
     let isLoggedIn = false;
 
     try {
-      const sessionRes = await fetch(new URL("/api/auth/get-session", request.url), {
+      const sessionRes = await fetch(new URL("/api/auth/get-session", publicOrigin), {
         headers: {
           cookie: request.headers.get("cookie") || "",
         },
@@ -94,8 +107,7 @@ export async function proxy(request: NextRequest) {
 
     // Protected routes: redirect to /auth if not logged in
     if (isProtected && !isLoggedIn) {
-      const url = new URL("/auth", request.url);
-      url.port = "";
+      const url = new URL("/auth", publicOrigin);
       url.searchParams.set("mode", "login");
       url.searchParams.set("redirect", `${request.nextUrl.pathname}${request.nextUrl.search}`);
       return NextResponse.redirect(url);
@@ -104,8 +116,7 @@ export async function proxy(request: NextRequest) {
     // Auth pages: redirect to the intended local destination if already logged in
     if (isAuthPage && isLoggedIn) {
       const redirectTo = getSafeLocalRedirect(request.nextUrl.searchParams.get("redirect")) || "/dashboard";
-      const url = new URL(redirectTo, request.url);
-      url.port = "";
+      const url = new URL(redirectTo, publicOrigin);
       return NextResponse.redirect(url);
     }
   }
