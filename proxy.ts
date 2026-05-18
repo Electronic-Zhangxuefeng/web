@@ -27,7 +27,16 @@ export async function proxy(request: NextRequest) {
       url.pathname = "/mentor";
       return NextResponse.rewrite(url);
     }
-    // Other paths (/auth, /dashboard, /onboarding, /admin, /call, /api/*) pass through
+    // /auth on mentor subdomain: inject role=mentor so the page renders mentor UI
+    if (
+      pathname.startsWith("/auth") &&
+      request.nextUrl.searchParams.get("role") !== "mentor"
+    ) {
+      const url = request.nextUrl.clone();
+      url.searchParams.set("role", "mentor");
+      return NextResponse.rewrite(url);
+    }
+    // Other paths (/dashboard, /onboarding, /admin, /call, /api/*) pass through
   } else if (
     pathname === "/mentor" &&
     (host === "www.wenjin-zhilu.com" || host === "wenjin-zhilu.com")
