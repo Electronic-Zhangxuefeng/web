@@ -1,7 +1,7 @@
 // web/app/onboarding/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -35,6 +35,7 @@ export default function OnboardingPage() {
 
   const [profile, setProfile] = useState<MentorProfile | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const loadedUserIdRef = useRef<string | null>(null);
 
   const [step, setStep] = useState(0);
   const [basic, setBasic] = useState<Step1Data>({
@@ -60,17 +61,22 @@ export default function OnboardingPage() {
   const [saving, setSaving] = useState<"draft" | "next" | "submit" | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
 
+  const sessionUserId = session?.user?.id;
+  const sessionUserRole = (session?.user as { role?: string } | undefined)?.role;
+  const sessionUserName = session?.user?.name || "";
+
   useEffect(() => {
     if (isPending) return;
-    if (!session) {
+    if (!sessionUserId) {
       router.replace("/auth?mode=login");
       return;
     }
-    const role = (session.user as { role?: string }).role;
-    if (role !== "mentor") {
+    if (sessionUserRole !== "mentor") {
       router.replace("/dashboard");
       return;
     }
+    if (loadedUserIdRef.current === sessionUserId) return;
+    loadedUserIdRef.current = sessionUserId;
     apiGet<{ mentorProfile: MentorProfile | null }>("/api/me/profile").then((r) => {
       const p = r.mentorProfile;
       setProfile(p);
@@ -84,7 +90,7 @@ export default function OnboardingPage() {
           year: p.year || "",
           displayInitial:
             merged.displayInitial ||
-            ((session.user.name || "").trim().charAt(0)) ||
+            (sessionUserName.trim().charAt(0)) ||
             "",
           bio: p.bio || "",
           tags: p.tags || [],
@@ -94,7 +100,7 @@ export default function OnboardingPage() {
       }
       setLoaded(true);
     });
-  }, [session, isPending, router]);
+  }, [sessionUserId, sessionUserRole, sessionUserName, isPending, router]);
 
   if (isPending || !loaded) {
     return (

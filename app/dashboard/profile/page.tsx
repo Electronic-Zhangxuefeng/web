@@ -55,17 +55,18 @@ type MeProfile = {
 
 export default function ProfilePage() {
   const { data: session } = authClient.useSession();
+  const sessionUserId = session?.user?.id;
   const [me, setMe] = useState<MeProfile | null>(null);
 
   useEffect(() => {
-    if (!session) return;
+    if (!sessionUserId) return;
     apiGet<MeProfile>("/api/me/profile").then(setMe);
-  }, [session]);
+  }, [sessionUserId]);
 
   if (!me) return <div style={{ padding: 32, color: "#6e6e68" }}>加载中…</div>;
 
   return me.user.role === "mentor" ? (
-    <MentorProfileEditor profile={me.mentorProfile ?? null} />
+    <MentorProfileEditor profile={me.mentorProfile ?? null} userName={me.user.name} />
   ) : (
     <ParentProfileView profile={me.parentProfile ?? null} />
   );
@@ -73,14 +74,18 @@ export default function ProfilePage() {
 
 // ── Mentor ─────────────────────────────────────────────────────────────
 
-function MentorProfileEditor({ profile }: { profile: MentorProfile | null }) {
-  const { data: session } = authClient.useSession();
+function MentorProfileEditor({
+  profile,
+  userName,
+}: {
+  profile: MentorProfile | null;
+  userName: string;
+}) {
   const accent = "#3d5c4d";
   const status = profile?.reviewStatus || "draft";
   const canSubmit = status === "draft" || status === "rejected";
 
   const initialIntro = mergeIntroCard(profile?.introCard);
-  const userName = session?.user?.name || "";
 
   const [basic, setBasic] = useState<Step1Data>({
     school: profile?.school || "",
@@ -109,14 +114,6 @@ function MentorProfileEditor({ profile }: { profile: MentorProfile | null }) {
 
   const [saving, setSaving] = useState<"draft" | "submit" | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
-
-  // 如果在 mount 时 session 还没就绪，等回来后给 displayInitial 兜底一次
-  useEffect(() => {
-    if (!userName) return;
-    setBasic((p) =>
-      p.displayInitial ? p : { ...p, displayInitial: userName.trim().charAt(0) || "" },
-    );
-  }, [userName]);
 
   const buildBody = () => {
     // 保留 _lastStep 原值，dashboard 不应改动 wizard 的进度记录

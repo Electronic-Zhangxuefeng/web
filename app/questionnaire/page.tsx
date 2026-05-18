@@ -237,7 +237,7 @@ function CheckboxQ({
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                   <path
                     d="M1.5 5.5 L4 8 L9 2"
-                    stroke="var(--amber)"
+                    stroke="#ffffff"
                     strokeWidth="1.8"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -368,10 +368,10 @@ function StepProgress({ step }: { step: number }) {
                 }`}
               >
                 {done ? (
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
                     <path
                       d="M2 7 L6 11 L12 3"
-                      stroke="var(--cream)"
+                      stroke="#ffffff"
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -383,10 +383,9 @@ function StepProgress({ step }: { step: number }) {
               </div>
               <div className={styles.stepLabel}>
                 <div
-                  className={
+                  className={`${styles.stepTitle} ${
                     done || active ? styles.stepTitleActive : styles.stepTitleFaded
-                  }
-                  style={{ fontFamily: "var(--serif)", fontSize: 16, fontWeight: 600 }}
+                  }`}
                 >
                   {s.title}
                 </div>
@@ -447,27 +446,14 @@ function MatchResults() {
           </div>
         ))}
 
-        <div
-          style={{
-            position: "relative",
-            marginTop: -200,
-            height: 200,
-            background:
-              "linear-gradient(to bottom, transparent, rgba(242,233,215,0.95) 60%)",
-            display: "flex",
-            alignItems: "flex-end",
-            justifyContent: "center",
-            paddingBottom: 20,
-            pointerEvents: "none",
-          }}
-        >
+        <div className={styles.matchLockOverlay}>
           <div className={styles.matchLock}>
             <div className={styles.matchLockIcon}>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <rect x="3" y="8" width="12" height="8" rx="2" fill="var(--cream)" />
+                <rect x="3" y="8" width="12" height="8" rx="2" fill="#ffffff" />
                 <path
                   d="M6 8V5a3 3 0 0 1 6 0v3"
-                  stroke="var(--cream)"
+                  stroke="#ffffff"
                   strokeWidth="1.5"
                   fill="none"
                 />
@@ -484,7 +470,7 @@ function MatchResults() {
           免费注册，查看完整学长学姐资料、历史评价，选择你最想聊的那位。
         </p>
         <Link className={styles.matchCtaBtn} href={`/auth?redirect=${encodeURIComponent("/questionnaire?results=1")}`}>
-          注册 / 登录 <span style={{ fontSize: 20 }}>→</span>
+          注册 / 登录 <span>→</span>
         </Link>
       </div>
     </div>
@@ -575,7 +561,7 @@ function QuestionnaireInner() {
   }).length;
 
   return (
-    <div style={{ background: "var(--bg)", minHeight: "100vh", color: "var(--brown)" }}>
+    <div className={styles.shell}>
       {/* Header */}
       <header className={styles.header}>
         <Link href="/" className={styles.logoLink}>
@@ -584,7 +570,7 @@ function QuestionnaireInner() {
           </div>
           <div className={styles.logoTextWrap}>
             <div className={styles.logoName}>问津 · 指路</div>
-            <div className={styles.logoSub}>意 向 问 卷 · INTAKE FORM</div>
+            <div className={styles.logoSub}>INTAKE FORM</div>
           </div>
         </Link>
         <Link href="/" className={styles.backLink}>
@@ -642,7 +628,7 @@ function QuestionnaireInner() {
 
                 <button className={styles.nextBtn} onClick={next}>
                   {step === STEPS.length - 1 ? "提交问卷" : "下一步"}
-                  <span style={{ fontSize: 18 }}>→</span>
+                  <span>→</span>
                 </button>
               </div>
             </div>
@@ -658,7 +644,7 @@ function QuestionnaireInner() {
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path
                       d="M2 6.5 L5 9 L10 3"
-                      stroke="var(--amber)"
+                      stroke="#b8472d"
                       strokeWidth="1.8"
                       strokeLinecap="round"
                       strokeLinejoin="round"
