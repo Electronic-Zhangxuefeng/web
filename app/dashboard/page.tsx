@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { apiGet, apiSend, formatCents, formatDateTime, ApiError } from "@/lib/api";
+import { apiGet, formatCents, formatDateTime, ApiError } from "@/lib/api";
 import styles from "./dashboard.module.css";
 
 type IntroCard = {
@@ -66,23 +65,6 @@ type Order = {
   createdAt: string;
 };
 
-type MatchRow = {
-  // 测试期间从 /api/mentors 返回所有学长，没有 matchId / score / rank
-  matchId?: string;
-  score?: string;
-  rank?: number;
-  mentorId: string;
-  school: string | null;
-  college: string | null;
-  major: string | null;
-  year: string | null;
-  bio: string | null;
-  tags: string[] | null;
-  ratingAvg: string;
-  reviewsCount: number;
-  name: string;
-};
-
 type MentorListItem = {
   id: string;
   name: string;
@@ -103,11 +85,10 @@ type Earnings = {
 };
 
 export default function DashboardPage() {
-  const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [me, setMe] = useState<MeProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [matches, setMatches] = useState<MatchRow[]>([]);
+  const [mentors, setMentors] = useState<MentorListItem[]>([]);
   const [earnings, setEarnings] = useState<Earnings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -128,26 +109,10 @@ export default function DashboardPage() {
         setOrders(ordersRes.orders);
 
         if (role === "parent") {
-          // 测试阶段：先用 /api/mentors（所有学长），等匹配算法完善后再切回 /api/matches
           const m = await apiGet<{ mentors: MentorListItem[] }>("/api/mentors").catch(() => ({
             mentors: [] as MentorListItem[],
           }));
-          if (!cancel) {
-            setMatches(
-              m.mentors.map((x) => ({
-                mentorId: x.id,
-                name: x.name,
-                school: x.school,
-                college: x.college,
-                major: x.major,
-                year: x.year,
-                bio: x.bio,
-                tags: x.tags,
-                ratingAvg: x.ratingAvg,
-                reviewsCount: x.reviewsCount,
-              }))
-            );
-          }
+          if (!cancel) setMentors(m.mentors);
         } else {
           const e = await apiGet<Earnings>("/api/mentors/me/earnings").catch(() => null);
           if (!cancel && e) setEarnings(e);
@@ -179,16 +144,15 @@ export default function DashboardPage() {
         <p className={styles.pageSub}>
           {role === "mentor"
             ? "看看你今天的咨询安排和最新审核进度。"
-            : "查看你的咨询匹配、订单和最新状态。"}
+            : "看看可咨询的学长学姐、订单和最新状态。"}
         </p>
 
         {role === "parent" ? (
           <ParentOverview
             profile={me.parentProfile ?? null}
             orders={orders}
-            matches={matches}
+            mentors={mentors}
             accent={accent}
-            router={router}
           />
         ) : (
           <MentorOverview
@@ -208,32 +172,16 @@ export default function DashboardPage() {
 function ParentOverview({
   profile,
   orders,
-  matches,
+  mentors,
   accent,
-  router,
 }: {
   profile: ParentProfile | null;
   orders: Order[];
-  matches: MatchRow[];
+  mentors: MentorListItem[];
   accent: string;
-  router: ReturnType<typeof useRouter>;
 }) {
   const upcoming = orders.filter((o) => o.status === "scheduled" || o.status === "in_call");
   const done = orders.filter((o) => o.status === "completed" || o.status === "reviewed");
-
-  const [rematching, setRematching] = useState(false);
-  const rematch = async () => {
-    setRematching(true);
-    try {
-      await apiSend("/api/me/profile/rematch", "POST");
-      router.refresh();
-      window.location.reload();
-    } catch (e) {
-      alert((e as Error).message || "重新匹配失败");
-    } finally {
-      setRematching(false);
-    }
-  };
 
   if (!profile) {
     return (
@@ -241,7 +189,7 @@ function ParentOverview({
         <div className={styles.cardBanner} style={{ background: accent }} />
         <h3 className={styles.cardTitle}>先填一份咨询问卷</h3>
         <p className={styles.cardSub} style={{ marginBottom: 14 }}>
-          完成问卷后，系统会为你匹配合适的学长学姐。整个过程约 3 分钟。
+          填完问卷,可以更好地告诉学长学姐你想聊什么。整个过程约 3 分钟。
         </p>
         <Link href="/questionnaire" className={`${styles.btn} ${styles.btnPrimary}`} style={{ background: accent }}>
           开始填写问卷
@@ -264,33 +212,25 @@ function ParentOverview({
           <p className={styles.statValue}>{done.length}</p>
         </div>
         <div className={styles.card}>
-          <p className={styles.cardSub}>匹配到的学长</p>
-          <p className={styles.statValue}>{matches.length}</p>
+          <p className={styles.cardSub}>可咨询的学长</p>
+          <p className={styles.statValue}>{mentors.length}</p>
         </div>
       </div>
 
       <div className={styles.section}>
         <div className={styles.sectionHead}>
-          <h2 className={styles.sectionTitle}>推荐学长 · 学姐</h2>
-          <button
-            className={`${styles.btn} ${styles.btnGhost}`}
-            onClick={rematch}
-            disabled={rematching}
-          >
-            {rematching ? "正在重新匹配…" : "重新匹配"}
-          </button>
+          <h2 className={styles.sectionTitle}>学长 · 学姐</h2>
         </div>
-        {matches.length === 0 ? (
+        {mentors.length === 0 ? (
           <div className={styles.emptyState}>
-            还没有匹配结果。可能是当前还没有合适的学长，<br />
-            或者你需要重新调整问卷里的方向。
+            暂时还没有可咨询的学长学姐。
           </div>
         ) : (
           <div className={styles.grid2}>
-            {matches.slice(0, 6).map((m) => (
+            {mentors.map((m) => (
               <Link
-                key={m.mentorId}
-                href={`/dashboard/mentors/${m.mentorId}`}
+                key={m.id}
+                href={`/dashboard/mentors/${m.id}`}
                 className={styles.card}
                 style={{ textDecoration: "none" }}
               >

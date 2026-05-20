@@ -355,21 +355,6 @@ const TILT_LABEL: Record<string, string> = {
 
 function ParentProfileView({ profile }: { profile: ParentProfile | null }) {
   const accent = "#b8472d";
-  const [rematching, setRematching] = useState(false);
-  const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
-
-  const rematch = async () => {
-    setRematching(true);
-    setMsg(null);
-    try {
-      const r = await apiSend<{ count: number }>("/api/me/profile/rematch", "POST");
-      setMsg({ kind: "ok", text: `已重新匹配，共 ${r.count} 位学长` });
-    } catch (e) {
-      setMsg({ kind: "err", text: e instanceof ApiError ? e.message : (e as Error).message });
-    } finally {
-      setRematching(false);
-    }
-  };
 
   return (
     <>
@@ -380,14 +365,14 @@ function ParentProfileView({ profile }: { profile: ParentProfile | null }) {
       </div>
       <div className={styles.content}>
         <h1 className={styles.pageTitle}>我的资料</h1>
-        <p className={styles.pageSub}>你在问卷里填写的信息，会影响匹配结果。</p>
+        <p className={styles.pageSub}>你在问卷里填写的信息,会展示给学长学姐看。</p>
 
         {!profile ? (
           <div className={styles.card} style={{ marginTop: 16 }}>
             <div className={styles.cardBanner} style={{ background: accent }} />
             <h3 className={styles.cardTitle}>还没有填写问卷</h3>
             <p className={styles.cardSub} style={{ marginBottom: 14 }}>
-              先完成问卷，系统才能为你匹配合适的学长学姐。
+              填一份问卷,可以更清楚地告诉学长学姐你想聊什么。
             </p>
             <Link
               href="/questionnaire"
@@ -399,12 +384,6 @@ function ParentProfileView({ profile }: { profile: ParentProfile | null }) {
           </div>
         ) : (
           <>
-            {msg && (
-              <div className={msg.kind === "ok" ? styles.alertOk : styles.alertBad} style={{ marginBottom: 16 }}>
-                {msg.text}
-              </div>
-            )}
-
             <div className={styles.grid2}>
               <InfoCard label="身份" value={profile.parentRole ? PARENT_ROLE_LABEL[profile.parentRole] || profile.parentRole : "—"} />
               <InfoCard label="所在省份" value={profile.province || "—"} />
@@ -452,18 +431,11 @@ function ParentProfileView({ profile }: { profile: ParentProfile | null }) {
             <div className={styles.section} style={{ display: "flex", gap: 10 }}>
               <Link
                 href="/questionnaire"
-                className={`${styles.btn} ${styles.btnGhost}`}
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                style={{ background: accent }}
               >
                 重新填写问卷
               </Link>
-              <button
-                className={`${styles.btn} ${styles.btnPrimary}`}
-                style={{ background: accent }}
-                onClick={rematch}
-                disabled={rematching}
-              >
-                {rematching ? "重新匹配中…" : "重新匹配学长"}
-              </button>
             </div>
           </>
         )}
