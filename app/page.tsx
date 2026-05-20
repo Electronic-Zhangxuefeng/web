@@ -218,7 +218,7 @@ export default function Home() {
               <div className={styles.priceHintTag}>关于价格</div>
               <p className={styles.priceHintBody}>
                 <strong className={styles.priceHintNum}>¥150 起</strong>
-                ，先把一个关键问题问清楚。具体价格会根据咨询时长、匹配对象和问题复杂度有所不同；
+                ，把关键问题问清楚。具体价格会根据咨询时长、匹配对象和问题复杂度有所不同；
                 您可在查看匹配对象后，再决定是否预约。
               </p>
             </div>
