@@ -1,7 +1,7 @@
 // web/app/onboarding/components/SchoolSelect.tsx
 "use client";
 import { useMemo, useState } from "react";
-import { SHANGHAI_SCHOOLS, OTHER_SCHOOL_SENTINEL } from "../schools";
+import { PRESET_SCHOOLS, OTHER_SCHOOL_SENTINEL } from "../schools";
 import styles from "../onboarding.module.css";
 
 export function SchoolSelect({
@@ -11,15 +11,15 @@ export function SchoolSelect({
   value: string;
   onChange: (v: string) => void;
 }) {
-  const isPreset = SHANGHAI_SCHOOLS.includes(value as (typeof SHANGHAI_SCHOOLS)[number]);
+  const isPreset = PRESET_SCHOOLS.includes(value as (typeof PRESET_SCHOOLS)[number]);
   const [mode, setMode] = useState<"preset" | "other">(
     value && !isPreset ? "other" : "preset",
   );
   const [query, setQuery] = useState("");
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return SHANGHAI_SCHOOLS;
-    return SHANGHAI_SCHOOLS.filter((s) => s.includes(query.trim()));
+    if (!query.trim()) return PRESET_SCHOOLS;
+    return PRESET_SCHOOLS.filter((s) => s.includes(query.trim()));
   }, [query]);
 
   if (mode === "other") {

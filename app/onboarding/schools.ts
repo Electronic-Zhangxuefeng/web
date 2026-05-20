@@ -1,10 +1,12 @@
 // web/app/onboarding/schools.ts
-export const SHANGHAI_SCHOOLS = [
-  // 985+211+双一流
+export const PRESET_SCHOOLS = [
+  // 京 985
+  "清华大学", "北京大学",
+  // 上海 985+211+双一流
   "复旦大学", "上海交通大学", "同济大学", "华东师范大学",
-  // 211+双一流
+  // 上海 211+双一流
   "上海财经大学", "华东理工大学", "上海外国语大学", "上海大学",
-  "东华大学", "海军军医大学",
+  "东华大学", "海军军医大学", "华东政法大学",
   // 纯双一流
   "上海科技大学", "上海中医药大学", "上海海洋大学", "上海体育大学",
   // 公办普通本科
@@ -20,6 +22,6 @@ export const SHANGHAI_SCHOOLS = [
   "上海纽约大学", "昆山杜克大学",
 ] as const;
 
-export type ShanghaiSchool = (typeof SHANGHAI_SCHOOLS)[number];
+export type PresetSchool = (typeof PRESET_SCHOOLS)[number];
 
 export const OTHER_SCHOOL_SENTINEL = "其它（请手动输入）";

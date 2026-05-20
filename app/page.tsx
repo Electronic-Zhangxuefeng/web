@@ -32,6 +32,7 @@ const SCHOOLS = [
   { abbr: "THU", name: "清华大学", count: "53" },
   { abbr: "PKU", name: "北京大学", count: "48" },
   { abbr: "RUC", name: "中国人民大学", count: "22" },
+  { abbr: "ECUPL", name: "华东政法大学", count: "19" },
 ];
 
 const STEPS = [
