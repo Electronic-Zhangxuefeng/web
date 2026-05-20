@@ -255,10 +255,7 @@ export default function Home() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionHead}>
               <div className={styles.sectionEyebrow}>FAQ</div>
-              <h2 className={styles.sectionTitle}>家长常问的几个问题</h2>
-              <p className={styles.sectionSub}>
-                这里先回答三个最常被问到的疑虑。更完整的 FAQ 会逐步整理。
-              </p>
+              <h2 className={styles.sectionTitle}>常见问题</h2>
             </div>
             <div className={styles.faqList}>
               {FAQS.map((f) => (
