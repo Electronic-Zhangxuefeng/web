@@ -103,9 +103,8 @@ export default function Home() {
           <a href="#why">为什么需要问津</a>
           <a href="#how">如何参与</a>
           <Link href="/questions">家长都在问</Link>
-          <Link href="/auth?mode=login">登录</Link>
-          <Link href="/questionnaire" className={styles.navBtn}>
-            看看能问谁
+          <Link href="/auth?mode=login" className={styles.navBtn}>
+            登录
           </Link>
         </nav>
       </header>

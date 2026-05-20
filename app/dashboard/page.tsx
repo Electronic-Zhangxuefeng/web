@@ -84,12 +84,18 @@ type Earnings = {
   thisMonthSettledCents: number;
 };
 
+type SlotLite = {
+  startAt: string;
+  status: "open" | "booked" | "cancelled";
+};
+
 export default function DashboardPage() {
   const { data: session, isPending } = authClient.useSession();
   const [me, setMe] = useState<MeProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [mentors, setMentors] = useState<MentorListItem[]>([]);
   const [earnings, setEarnings] = useState<Earnings | null>(null);
+  const [openFutureSlots, setOpenFutureSlots] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -116,6 +122,18 @@ export default function DashboardPage() {
         } else {
           const e = await apiGet<Earnings>("/api/mentors/me/earnings").catch(() => null);
           if (!cancel && e) setEarnings(e);
+          if (meRes.mentorProfile?.reviewStatus === "approved") {
+            const s = await apiGet<{ slots: SlotLite[] }>("/api/mentors/me/slots").catch(() => ({
+              slots: [] as SlotLite[],
+            }));
+            if (!cancel) {
+              const now = Date.now();
+              setOpenFutureSlots(
+                s.slots.filter((x) => x.status === "open" && new Date(x.startAt).getTime() > now)
+                  .length,
+              );
+            }
+          }
         }
       } finally {
         if (!cancel) setLoading(false);
@@ -159,6 +177,7 @@ export default function DashboardPage() {
             profile={me.mentorProfile ?? null}
             orders={orders}
             earnings={earnings}
+            openFutureSlots={openFutureSlots}
             accent={accent}
           />
         )}
@@ -297,11 +316,13 @@ function MentorOverview({
   profile,
   orders,
   earnings,
+  openFutureSlots,
   accent,
 }: {
   profile: MentorProfile | null;
   orders: Order[];
   earnings: Earnings | null;
+  openFutureSlots: number | null;
   accent: string;
 }) {
   const upcoming = orders
@@ -310,7 +331,7 @@ function MentorOverview({
 
   return (
     <>
-      <ReviewStatusBanner profile={profile} accent={accent} />
+      <ReviewStatusBanner profile={profile} openFutureSlots={openFutureSlots} accent={accent} />
 
       {earnings && (
         <div className={styles.grid3} style={{ marginTop: 16 }}>
@@ -369,9 +390,11 @@ function MentorOverview({
 
 function ReviewStatusBanner({
   profile,
+  openFutureSlots,
   accent,
 }: {
   profile: MentorProfile | null;
+  openFutureSlots: number | null;
   accent: string;
 }) {
   if (!profile) {
@@ -435,6 +458,24 @@ function ReviewStatusBanner({
           style={{ background: accent }}
         >
           修改并重新提交
+        </Link>
+      </div>
+    );
+  }
+  if (openFutureSlots === 0) {
+    return (
+      <div className={styles.alertWarn} style={{ marginTop: 16 }}>
+        <span>⏰</span>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 500, marginBottom: 2 }}>还差最后一步</div>
+          <div>设置你的咨询档期,家长才能下单。</div>
+        </div>
+        <Link
+          href="/dashboard/slots"
+          className={`${styles.btn} ${styles.btnPrimary}`}
+          style={{ background: accent }}
+        >
+          去开放档期
         </Link>
       </div>
     );

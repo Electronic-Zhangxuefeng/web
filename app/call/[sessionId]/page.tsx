@@ -15,6 +15,7 @@ type CallTokenResponse = {
   peerName?: string;
   appID: number;
   durationMins: number;
+  orderId: string | null;
 };
 
 export default function CallPage() {
@@ -24,7 +25,6 @@ export default function CallPage() {
 
   const { data: session, isPending } = authClient.useSession();
   const [callState, setCallState] = useState<CallState>("loading");
-  const [muted, setMuted] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [durationMins, setDurationMins] = useState(30);
   const [peerName, setPeerName] = useState("");
@@ -32,6 +32,8 @@ export default function CallPage() {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const statusPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const roomIdRef = useRef("");
+  const orderIdRef = useRef<string | null>(null);
+  const lastSeenEndedAtRef = useRef<string | null>(null);
   const endedRef = useRef(false);
   const callStartedRef = useRef(false);
   const startReportInFlightRef = useRef(false);
@@ -77,8 +79,14 @@ export default function CallPage() {
         console.error(error);
       }
     }
-    setCallState("ended");
-  }, [sessionId]);
+
+    // 挂断后(自挂或对方挂)统一回到订单详情;30 分钟窗口内还能点「继续通话」重连
+    if (orderIdRef.current) {
+      router.replace(`/dashboard/orders/${orderIdRef.current}`);
+    } else {
+      setCallState("ended");
+    }
+  }, [sessionId, router]);
 
   useEffect(() => {
     if (isPending || !session) return;
@@ -101,6 +109,8 @@ export default function CallPage() {
       if (cancelled) return;
 
       roomIdRef.current = data.roomID;
+      orderIdRef.current = data.orderId;
+      lastSeenEndedAtRef.current = null;
       setElapsed(0);
       setDurationMins(data.durationMins);
       setPeerName(data.peerName || "对方");
@@ -172,8 +182,18 @@ export default function CallPage() {
             credentials: "include",
           });
           if (!statusRes.ok) return;
-          const statusData = await statusRes.json();
+          const statusData = (await statusRes.json()) as {
+            status: "pending" | "active" | "ended";
+            endedAt: string | null;
+          };
+          // 服务端因超时把 session 标 ended → 双方都下线
           if (statusData.status === "ended") {
+            void endCall({ reportEnd: false });
+            return;
+          }
+          // 对方主动挂断 → endedAt 是一个本端没见过的时间戳 → 本端也离开
+          if (statusData.endedAt && lastSeenEndedAtRef.current !== statusData.endedAt) {
+            lastSeenEndedAtRef.current = statusData.endedAt;
             void endCall({ reportEnd: false });
           }
         } catch (error) {
@@ -255,7 +275,7 @@ export default function CallPage() {
         <h2 className={styles.userName}>{peerName || "对方"}</h2>
         <p className={styles.waitingText}>等待对方加入...</p>
         <div className={styles.spinner} />
-        <button className={styles.cancelBtn} onClick={() => { void endCall(); router.push("/dashboard"); }}>
+        <button className={styles.cancelBtn} onClick={() => void endCall()}>
           取消
         </button>
       </div>
@@ -284,17 +304,11 @@ export default function CallPage() {
 
       <div className={styles.controls}>
         <button
-          className={`${styles.controlBtn} ${muted ? styles.controlBtnActive : ""}`}
-          onClick={() => setMuted(zego.toggleMute())}
-          title={muted ? "取消静音" : "静音"}
+          className={`${styles.controlBtn} ${styles.hangupBtn}`}
+          onClick={() => void endCall()}
+          title="挂断"
         >
-          {muted ? "🔇" : "🎤"}
-        </button>
-        <button className={`${styles.controlBtn} ${styles.hangupBtn}`} onClick={() => void endCall()} title="挂断">
           📞
-        </button>
-        <button className={styles.controlBtn} title="扬声器">
-          🔊
         </button>
       </div>
     </div>

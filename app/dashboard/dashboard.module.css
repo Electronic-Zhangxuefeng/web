@@ -401,6 +401,102 @@
   .grid3 {
     grid-template-columns: 1fr;
   }
+
+  .shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-right: none;
+    border-bottom: 1px solid #ececec;
+  }
+  .brand {
+    padding: 12px 16px;
+    border-bottom: none;
+  }
+  .navGroup {
+    padding: 0 12px 8px;
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .navGroup::-webkit-scrollbar {
+    display: none;
+  }
+  .navGroupLabel {
+    display: none;
+  }
+  .navItem {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    white-space: nowrap;
+    width: auto;
+  }
+  .sidebarFooter {
+    border-top: 1px solid #ececec;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .userBlock {
+    flex: 1;
+    min-width: 0;
+  }
+  .signOutBtn {
+    margin-top: 0;
+    width: auto;
+    padding: 6px 12px;
+    flex-shrink: 0;
+  }
+  .topbar {
+    padding: 0 16px;
+    height: 44px;
+    font-size: 12px;
+  }
+  .content {
+    padding: 18px 16px 48px;
+  }
+  .pageTitle {
+    font-size: 20px;
+  }
+  .pageSub {
+    margin-bottom: 18px;
+  }
+  .card {
+    padding: 16px;
+  }
+  .cardBanner {
+    margin: -16px -16px 12px;
+    height: 44px;
+  }
+  .statValue {
+    font-size: 24px;
+  }
+  .sectionHead {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .table {
+    font-size: 12px;
+  }
+  .table th,
+  .table td {
+    padding: 9px 10px;
+  }
+  .alertWarn {
+    flex-wrap: wrap;
+  }
+  .alertWarn .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Section */
