@@ -17,19 +17,14 @@ type SchoolEval = {
   cons: string;
 };
 type PersonalExp = {
-  majorMain: string;
-  majorOthers: string[];
   paths: string[];
-  research: { filled: boolean; text: string };
-  internship: { filled: boolean; text: string };
-  competition: { filled: boolean; text: string };
+  research: { had: boolean; text: string };
+  internship: { had: boolean; text: string };
+  competition: { had: boolean; text: string };
   zongping: { had: boolean; text: string };
-  program: { had: boolean; name: string; text: string };
+  program: { had: boolean; text: string };
   transfer: { had: boolean; text: string };
-  postgradDomestic: string;
-  studyAbroad: string;
-  exam: string;
-  employment: string;
+  supplement: string;
 };
 type IntroCard = {
   _lastStep?: number;
@@ -375,36 +370,23 @@ export default function MentorDetailPage() {
 
 function PersonalExpView({ exp }: { exp: PersonalExp }) {
   const items: { label: string; text: string }[] = [];
-  if (exp.research.filled && exp.research.text) items.push({ label: "科研经历", text: exp.research.text });
-  if (exp.internship.filled && exp.internship.text)
+  if (exp.research.had && exp.research.text)
+    items.push({ label: "科研经历", text: exp.research.text });
+  if (exp.internship.had && exp.internship.text)
     items.push({ label: "实习经历", text: exp.internship.text });
-  if (exp.competition.filled && exp.competition.text)
+  if (exp.competition.had && exp.competition.text)
     items.push({ label: "竞赛经历", text: exp.competition.text });
   if (exp.zongping.had && exp.zongping.text)
     items.push({ label: "综合评价 / 保送", text: exp.zongping.text });
-  if (exp.program.had && (exp.program.text || exp.program.name))
-    items.push({
-      label: `项目 / 培养计划${exp.program.name ? ` · ${exp.program.name}` : ""}`,
-      text: exp.program.text,
-    });
-  if (exp.transfer.had && exp.transfer.text) items.push({ label: "转专业经历", text: exp.transfer.text });
-
-  const pathTexts: { label: string; text: string }[] = [];
-  if (exp.paths.includes("postgrad_domestic") && exp.postgradDomestic)
-    pathTexts.push({ label: "保研 / 直博", text: exp.postgradDomestic });
-  if (exp.paths.includes("study_abroad") && exp.studyAbroad)
-    pathTexts.push({ label: "出国留学", text: exp.studyAbroad });
-  if ((exp.paths.includes("kaoyan") || exp.paths.includes("civil_exam")) && exp.exam)
-    pathTexts.push({ label: "考研 / 考公", text: exp.exam });
-  if (exp.paths.includes("employment") && exp.employment)
-    pathTexts.push({ label: "就业方向", text: exp.employment });
+  if (exp.program.had && exp.program.text)
+    items.push({ label: "特色培养计划", text: exp.program.text });
+  if (exp.transfer.had && exp.transfer.text)
+    items.push({ label: "转专业经历", text: exp.transfer.text });
 
   const hasAny =
-    exp.majorMain ||
-    (exp.majorOthers && exp.majorOthers.length > 0) ||
     exp.paths.length > 0 ||
     items.length > 0 ||
-    pathTexts.length > 0;
+    (exp.supplement && exp.supplement.trim().length > 0);
   if (!hasAny) return null;
 
   return (
@@ -413,22 +395,6 @@ function PersonalExpView({ exp }: { exp: PersonalExp }) {
         <h2 className={styles.sectionTitle}>亲身经历</h2>
       </div>
       <div className={styles.card}>
-        {(exp.majorMain || exp.majorOthers.length > 0) && (
-          <div style={{ marginBottom: 14 }}>
-            <p className={styles.cardSub} style={{ marginBottom: 4 }}>
-              主修方向
-            </p>
-            <p style={{ fontSize: 14, color: "#1f1f1f" }}>
-              {exp.majorMain}
-              {exp.majorOthers.length > 0 && (
-                <span style={{ color: "#6e6e68", marginLeft: 8 }}>
-                  · 辅修 / 双 {exp.majorOthers.join("、")}
-                </span>
-              )}
-            </p>
-          </div>
-        )}
-
         {exp.paths.length > 0 && (
           <div style={{ marginBottom: 14 }}>
             <p className={styles.cardSub} style={{ marginBottom: 6 }}>
@@ -457,24 +423,14 @@ function PersonalExpView({ exp }: { exp: PersonalExp }) {
           </div>
         )}
 
-        {pathTexts.length > 0 && (
+        {exp.supplement && exp.supplement.trim().length > 0 && (
           <div style={{ marginTop: 18, paddingTop: 14, borderTop: "1px solid #ececec" }}>
-            <p
-              className={styles.cardSub}
-              style={{ marginBottom: 10, fontWeight: 500, color: "#1f1f1f" }}
-            >
-              路径细节
+            <p className={styles.cardSub} style={{ marginBottom: 4 }}>
+              其他补充
             </p>
-            <div className={styles.grid2}>
-              {pathTexts.map((p) => (
-                <div key={p.label}>
-                  <p className={styles.cardSub} style={{ marginBottom: 4 }}>
-                    {p.label}
-                  </p>
-                  <p style={{ fontSize: 14, color: "#1f1f1f", lineHeight: 1.7 }}>{p.text}</p>
-                </div>
-              ))}
-            </div>
+            <p style={{ fontSize: 14, color: "#1f1f1f", lineHeight: 1.7 }}>
+              {exp.supplement}
+            </p>
           </div>
         )}
       </div>

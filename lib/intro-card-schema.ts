@@ -44,36 +44,25 @@ export const schoolEvalSchema = z.object({
 });
 export type SchoolEval = z.infer<typeof schoolEvalSchema>;
 
-const longText = (max: number) =>
-  z.object({
-    filled: z.boolean().default(false),
-    text: z.string().max(max).default(""),
-  });
-
 const boolWithText = (max: number) =>
   z.object({
     had: z.boolean().default(false),
     text: z.string().max(max).default(""),
   });
 
+// 一句话简介统一字数上限
+export const ONE_LINER_MAX = 120;
+export const SUPPLEMENT_MAX = 200;
+
 export const personalExpSchema = z.object({
-  majorMain: z.string().max(60).default(""),
-  majorOthers: z.array(z.string().max(20)).max(6).default([]),
   paths: z.array(z.enum(PATH_OPTIONS.map((p) => p.key) as [PathKey, ...PathKey[]])).default([]),
-  research: longText(500),
-  internship: longText(500),
-  competition: longText(500),
-  zongping: boolWithText(400),
-  program: z.object({
-    had: z.boolean().default(false),
-    name: z.string().max(40).default(""),
-    text: z.string().max(400).default(""),
-  }),
-  transfer: boolWithText(400),
-  postgradDomestic: z.string().max(400).default(""),
-  studyAbroad: z.string().max(400).default(""),
-  exam: z.string().max(400).default(""),
-  employment: z.string().max(400).default(""),
+  research: boolWithText(ONE_LINER_MAX),
+  internship: boolWithText(ONE_LINER_MAX),
+  competition: boolWithText(ONE_LINER_MAX),
+  zongping: boolWithText(ONE_LINER_MAX),
+  program: boolWithText(ONE_LINER_MAX),
+  transfer: boolWithText(ONE_LINER_MAX),
+  supplement: z.string().max(SUPPLEMENT_MAX).default(""),
 });
 export type PersonalExp = z.infer<typeof personalExpSchema>;
 
@@ -99,19 +88,14 @@ export function defaultIntroCard(): IntroCard {
       cons: "",
     },
     personalExp: {
-      majorMain: "",
-      majorOthers: [],
       paths: [],
-      research: { filled: false, text: "" },
-      internship: { filled: false, text: "" },
-      competition: { filled: false, text: "" },
+      research: { had: false, text: "" },
+      internship: { had: false, text: "" },
+      competition: { had: false, text: "" },
       zongping: { had: false, text: "" },
-      program: { had: false, name: "", text: "" },
+      program: { had: false, text: "" },
       transfer: { had: false, text: "" },
-      postgradDomestic: "",
-      studyAbroad: "",
-      exam: "",
-      employment: "",
+      supplement: "",
     },
   });
 }

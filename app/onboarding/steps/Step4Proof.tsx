@@ -43,9 +43,9 @@ export function Step4Proof({
 
   const filledCount = (() => {
     let n = 0;
-    if (intro.personalExp.research.filled && intro.personalExp.research.text.trim()) n++;
-    if (intro.personalExp.internship.filled && intro.personalExp.internship.text.trim()) n++;
-    if (intro.personalExp.competition.filled && intro.personalExp.competition.text.trim()) n++;
+    if (intro.personalExp.research.had) n++;
+    if (intro.personalExp.internship.had) n++;
+    if (intro.personalExp.competition.had) n++;
     if (intro.personalExp.zongping.had) n++;
     if (intro.personalExp.program.had) n++;
     if (intro.personalExp.transfer.had) n++;
@@ -134,7 +134,6 @@ export function Step4Proof({
         <Row label="优势 / 不足">
           优势 {intro.schoolEval.pros.length} 字 ｜ 不足 {intro.schoolEval.cons.length} 字
         </Row>
-        <Row label="主方向">{intro.personalExp.majorMain || "（未填）"}</Row>
         <Row label="当前路径">{pathsText || "（未选）"}</Row>
         <Row label="差异化经历">已填 {filledCount} 项</Row>
       </section>
