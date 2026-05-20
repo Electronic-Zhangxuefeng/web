@@ -160,7 +160,21 @@ function AuthForm() {
             />
           </div>
           <div className={styles.field}>
-            <label className={styles.label}>密码</label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <label className={styles.label}>密码</label>
+              {mode === "login" && (
+                <Link
+                  href={`/auth/forgot?role=${role}`}
+                  style={{
+                    fontSize: 12,
+                    color: accentColor,
+                    textDecoration: "none",
+                  }}
+                >
+                  忘记密码?
+                </Link>
+              )}
+            </div>
             <input
               type="password"
               className={styles.input}
