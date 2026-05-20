@@ -2,7 +2,6 @@
 "use client";
 import styles from "../onboarding.module.css";
 import { SchoolSelect } from "../components/SchoolSelect";
-import { ChipInput } from "../components/ChipInput";
 import { CharCounter } from "../components/CharCounter";
 import { YEAR_OPTIONS } from "@/lib/intro-card-schema";
 
@@ -105,16 +104,6 @@ export function Step1Basic({
         {errors.bio && <span className={styles.errorText}>{errors.bio}</span>}
       </div>
 
-      <div className={styles.fieldGroup}>
-        <label className={styles.label}>标签（选填，最多 8 个）</label>
-        <ChipInput
-          value={data.tags}
-          onChange={(v) => onChange({ tags: v })}
-          max={8}
-          maxLen={10}
-          placeholder="保研、实习经验、转专业……回车或逗号确认"
-        />
-      </div>
     </div>
   );
 }

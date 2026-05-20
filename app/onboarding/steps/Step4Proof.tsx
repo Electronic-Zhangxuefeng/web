@@ -126,9 +126,9 @@ export function Step4Proof({
         <Row label="学校 / 院系 / 专业 / 年级">
           {basic.school} ｜ {basic.college} ｜ {basic.major} ｜ {basic.year}
         </Row>
-        <Row label="学校评价">
+        <Row label="学院介绍">
           {(["career", "teaching", "life", "care", "practice"] as const)
-            .map((k) => `${DIM_LABEL[k]} ${intro.schoolEval[k].score}★`)
+            .map((k) => `${DIM_LABEL[k]} ${intro.schoolEval[k].note.length} 字`)
             .join(" · ")}
         </Row>
         <Row label="优势 / 不足">

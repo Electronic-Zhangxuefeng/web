@@ -1,7 +1,6 @@
 // web/app/onboarding/steps/Step2SchoolEval.tsx
 "use client";
 import styles from "../onboarding.module.css";
-import { StarRating } from "../components/StarRating";
 import { CharCounter } from "../components/CharCounter";
 import type { SchoolEval, SchoolEvalDimension } from "@/lib/intro-card-schema";
 
@@ -28,7 +27,7 @@ const DIMENSIONS: Array<{
   {
     key: "care",
     title: "人文关怀",
-    hint: "宿舍报修、保卫处求助、辅导员/心理咨询响应速度等。建议在理由里举一个真实例子。",
+    hint: "宿舍报修、保卫处求助、辅导员/心理咨询响应速度等。建议举一个真实例子。",
   },
   {
     key: "practice",
@@ -48,19 +47,18 @@ export function Step2SchoolEval({
 }) {
   return (
     <div>
-      <h1 className={styles.title}>学校评价</h1>
+      <h1 className={styles.title}>学院介绍</h1>
       <p className={styles.subtitle}>
-        以下信息将<strong>匿名聚合</strong>到该校的学校主页，是家长了解这所学校的核心依据。
+        以下内容将<strong>直接展示在你的个人主页</strong>，向前来咨询的家长与高中生体现你对学校与学院的了解程度。
       </p>
 
       <div className={styles.notice}>
-        如果你对某个维度不熟悉（例如大一新生对就业引导无感），建议按整体印象给中性 3 星，
-        并在理由里写一句&ldquo;我了解有限&rdquo;——比拍脑袋满分/零分更有用。
+        作为一名&ldquo;咨询师&rdquo;，我们需要你比较了解这个学院的某些方面，部分方面可以写&ldquo;不太了解&rdquo;，
+        但是详实的回答会增加家长选择你的概率。
       </div>
 
       {DIMENSIONS.map((d) => {
         const cur = data[d.key];
-        const errScore = errors[`${d.key}.score`];
         const errNote = errors[`${d.key}.note`];
         return (
           <div
@@ -74,24 +72,18 @@ export function Step2SchoolEval({
           >
             <div style={{ fontWeight: 600, fontSize: 14, color: "#1f1f1f" }}>{d.title}</div>
             <div style={{ fontSize: 12, color: "#9a9a93", margin: "4px 0 10px" }}>{d.hint}</div>
-            <StarRating
-              value={cur.score}
-              onChange={(v) => onChange({ [d.key]: { ...cur, score: v } } as Partial<SchoolEval>)}
+            <textarea
+              className={`${styles.textarea} ${errNote ? styles.inputError : ""}`}
+              value={cur.note}
+              maxLength={150}
+              rows={3}
+              onChange={(e) =>
+                onChange({ [d.key]: { ...cur, note: e.target.value } } as Partial<SchoolEval>)
+              }
+              placeholder="你对这一方面的了解（150 字内，可写&ldquo;不太了解&rdquo;）"
             />
-            {errScore && <span className={styles.errorText}>{errScore}</span>}
-            <div style={{ marginTop: 10 }}>
-              <input
-                className={`${styles.input} ${errNote ? styles.inputError : ""}`}
-                value={cur.note}
-                maxLength={60}
-                onChange={(e) =>
-                  onChange({ [d.key]: { ...cur, note: e.target.value } } as Partial<SchoolEval>)
-                }
-                placeholder="一句话理由（必填，60 字内）"
-              />
-              <CharCounter value={cur.note} max={60} />
-              {errNote && <span className={styles.errorText}>{errNote}</span>}
-            </div>
+            <CharCounter value={cur.note} max={150} />
+            {errNote && <span className={styles.errorText}>{errNote}</span>}
           </div>
         );
       })}
@@ -132,9 +124,7 @@ export function Step2SchoolEval({
 export function validateStep2(d: SchoolEval): Record<string, string> {
   const e: Record<string, string> = {};
   (["career", "teaching", "life", "care", "practice"] as const).forEach((k) => {
-    if (d[k].score < 1) e[`${k}.score`] = "请打分（1–5 星）";
-    if (!d[k].note.trim()) e[`${k}.note`] = "请填一句话理由";
-    else if (d[k].note.length > 60) e[`${k}.note`] = "不能超过 60 字";
+    if (d[k].note.length > 150) e[`${k}.note`] = "不能超过 150 字";
   });
   return e;
 }

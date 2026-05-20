@@ -1,12 +1,48 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
+import { authClient } from "@/lib/auth-client";
+import { apiSend } from "@/lib/api";
 import styles from "./page.module.css";
 
 const STORAGE_KEY = "wjzl_questionnaire";
+
+// UI 选项 → 后端 enum 映射
+const ROLE_MAP: Record<string, string> = {
+  "学生本人": "student",
+  "家长": "parent",
+  "老师": "teacher",
+  "其他": "other",
+};
+const STAGE_MAP: Record<string, string> = {
+  "高三 · 出分前": "senior_pre",
+  "高三 · 出分后": "senior_post",
+  "高一 / 高二": "g10_g11",
+  "复读": "gap",
+  "其他": "other",
+};
+const TILT_MAP: Record<string, string> = {
+  "偏就业向": "employment",
+  "偏学术向 / 保研": "grad_school",
+  "偏出国向": "overseas",
+  "偏体验感": "experience",
+  "自己也还没想好": "undecided",
+};
+
+function buildPayload(answers: Record<string, unknown>) {
+  return {
+    parentRole: ROLE_MAP[answers.role as string] || undefined,
+    province: (answers.province as string) || undefined,
+    stage: STAGE_MAP[answers.stage as string] || undefined,
+    intendedMajors: Array.isArray(answers.major) ? (answers.major as string[]) : undefined,
+    focusAreas: Array.isArray(answers.focus) ? (answers.focus as string[]) : undefined,
+    tilt: TILT_MAP[answers.tilt as string] || undefined,
+    note: (answers.note as string) || undefined,
+  };
+}
 
 // ─── Schema ─────────────────────────────────────────────────────────────────
 
@@ -481,12 +517,16 @@ function MatchResults() {
 
 function QuestionnaireInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
   const showResults = searchParams.get("results") === "1";
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -534,15 +574,30 @@ function QuestionnaireInner() {
     return Object.keys(e).length === 0;
   };
 
-  const next = () => {
+  const next = async () => {
     if (!validate()) return;
     if (step < STEPS.length - 1) {
       setStep(step + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
+      return;
+    }
+
+    // 最后一步 = 提交。已登录就直接写后端并跳 Dashboard；未登录就匿名写一份再走注册解锁。
+    setSubmitError("");
+    setSubmitting(true);
+    try {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(answers)); } catch {}
+      await apiSend("/api/parent-profile", "POST", buildPayload(answers));
+      if (session?.user) {
+        router.replace("/dashboard");
+        return;
+      }
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (e) {
+      setSubmitError((e as Error).message || "提交失败，请稍后再试");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -626,11 +681,20 @@ function QuestionnaireInner() {
                   已答 {answeredQs} / {totalQs}
                 </div>
 
-                <button className={styles.nextBtn} onClick={next}>
-                  {step === STEPS.length - 1 ? "提交问卷" : "下一步"}
+                <button className={styles.nextBtn} onClick={next} disabled={submitting}>
+                  {submitting
+                    ? "提交中…"
+                    : step === STEPS.length - 1
+                      ? "提交问卷"
+                      : "下一步"}
                   <span>→</span>
                 </button>
               </div>
+              {submitError && (
+                <div className={styles.errorMsg} style={{ marginTop: 12 }}>
+                  <span>⚠</span> {submitError}
+                </div>
+              )}
             </div>
 
             <div className={styles.reassurance}>

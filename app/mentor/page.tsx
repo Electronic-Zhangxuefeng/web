@@ -120,9 +120,9 @@ export default function MentorLanding() {
               <span>首批招募 · 5 月下旬开放</span>
             </div>
             <h1 className={styles.heroTitle}>
-              把你走过的路，
+              用你的经验
               <br />
-              帮一个家庭少走弯路。
+              帮助后来人
             </h1>
             <p className={styles.heroSub}>
               加入指路，做对口学弟学妹的领路人——用你最熟悉的话题，

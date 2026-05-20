@@ -29,8 +29,8 @@ export const YEAR_OPTIONS = [
 ] as const;
 
 const dimensionSchema = z.object({
-  score: z.number().int().min(0).max(5), // 0 = 未填
-  note: z.string().max(60).default(""),
+  score: z.number().int().min(0).max(5).default(0), // 历史字段，保留以兼容旧数据
+  note: z.string().max(150).default(""),
 });
 
 export const schoolEvalSchema = z.object({

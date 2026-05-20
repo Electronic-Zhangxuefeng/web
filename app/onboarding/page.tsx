@@ -243,7 +243,7 @@ export default function OnboardingPage() {
     }
     if (Object.keys(e2).length) {
       setStep(1);
-      setMsg({ kind: "err", text: "学校评价有未填项" });
+      setMsg({ kind: "err", text: "学院介绍有未填项" });
       return;
     }
     if (Object.keys(e3).length) {

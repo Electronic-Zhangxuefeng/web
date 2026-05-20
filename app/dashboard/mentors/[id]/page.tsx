@@ -81,18 +81,6 @@ const PATH_LABEL: Record<string, string> = {
   gap_other: "Gap / 其它",
 };
 
-function Stars({ score }: { score: number }) {
-  return (
-    <span style={{ color: ACCENT, letterSpacing: 2, fontSize: 14 }}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} style={{ opacity: i < score ? 1 : 0.18 }}>
-          ★
-        </span>
-      ))}
-    </span>
-  );
-}
-
 function groupSlotsByDate(slots: Slot[]): Record<string, Slot[]> {
   const m: Record<string, Slot[]> = {};
   for (const s of slots) {
@@ -224,35 +212,25 @@ export default function MentorDetailPage() {
           </p>
         </div>
 
-        {/* 学校评价 */}
+        {/* 学院介绍 */}
         {sEval && (
           <div className={styles.section}>
             <div className={styles.sectionHead}>
-              <h2 className={styles.sectionTitle}>学校 · 院系评价</h2>
+              <h2 className={styles.sectionTitle}>学院介绍</h2>
             </div>
             <div className={styles.card}>
               <div style={{ display: "grid", gap: 14 }}>
                 {DIM_LABELS.map(({ key, title }) => {
                   const d = sEval[key];
-                  if (!d || d.score === 0) return null;
+                  if (!d || !d.note?.trim()) return null;
                   return (
                     <div key={key}>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          marginBottom: 4,
-                        }}
-                      >
+                      <div style={{ marginBottom: 4 }}>
                         <span style={{ fontSize: 14, fontWeight: 500 }}>{title}</span>
-                        <Stars score={d.score} />
                       </div>
-                      {d.note && (
-                        <p style={{ fontSize: 13, color: "#4a4a45", lineHeight: 1.7, margin: 0 }}>
-                          {d.note}
-                        </p>
-                      )}
+                      <p style={{ fontSize: 13, color: "#4a4a45", lineHeight: 1.7, margin: 0 }}>
+                        {d.note}
+                      </p>
                     </div>
                   );
                 })}

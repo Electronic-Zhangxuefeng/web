@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
+import { claimAnonymousProfile } from "@/lib/api";
 import styles from "./verify.module.css";
 
 function maskEmail(email: string): string {
@@ -72,6 +73,7 @@ export default function VerifyPage() {
         sessionStorage.removeItem("verify_email");
         sessionStorage.removeItem("auth_redirect");
         sessionStorage.removeItem("auth_role");
+        await claimAnonymousProfile();
         router.replace(redirectTo);
       }
     } catch {
