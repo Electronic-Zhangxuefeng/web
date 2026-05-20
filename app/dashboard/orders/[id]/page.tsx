@@ -15,6 +15,8 @@ type Slot = {
   status: "open" | "booked" | "cancelled";
 };
 
+type PaymentStatus = "unpaid" | "waiting" | "paid" | "closed" | "refunded";
+
 type Order = {
   id: string;
   parentId: string;
@@ -31,6 +33,8 @@ type Order = {
   topic: string | null;
   priceCents?: number;
   mentorPayoutCents?: number;
+  paymentStatus: PaymentStatus;
+  paymentExpiresAt: string | null;
   paidAt: string | null;
   settledAt: string | null;
   parentReview: { rating: number; text: string | null } | null;
@@ -103,12 +107,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   const canStartCall =
     slot &&
+    order.paymentStatus === "paid" &&
     (order.status === "scheduled" || order.status === "in_call") &&
     Date.now() >= new Date(slot.startAt).getTime() - 5 * 60 * 1000 &&
     Date.now() <= new Date(slot.startAt).getTime() + slot.durationMins * 60 * 1000 + 10 * 60 * 1000;
 
   const canCancel = order.status === "scheduled";
   const canReview = (order.status === "completed" || order.status === "reviewed") && !myReview;
+  const canPay =
+    isParent &&
+    order.status === "scheduled" &&
+    (order.paymentStatus === "unpaid" || order.paymentStatus === "waiting" || order.paymentStatus === "closed");
 
   const startCall = async () => {
     setBusy("call");
@@ -133,6 +142,10 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       setBusy(null);
     }
   };
+  const payNow = () => {
+    router.push(`/pay/${id}`);
+  };
+
   const submitReview = async () => {
     setBusy("review");
     try {
@@ -216,8 +229,40 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           </div>
         )}
 
+        {isParent && order.paymentStatus !== "paid" && order.paymentStatus !== "refunded" && (
+          <div
+            className={styles.card}
+            style={{
+              marginTop: 16,
+              borderLeft: `3px solid ${accent}`,
+              background: "#fff8f5",
+            }}
+          >
+            <p className={styles.cardSub}>支付状态</p>
+            <p style={{ fontSize: 14, marginTop: 6, color: "#1f1f1f" }}>
+              {order.paymentStatus === "unpaid" && "尚未支付。完成支付后即可在约定时间进入通话。"}
+              {order.paymentStatus === "waiting" && "已发起支付，等待支付宝完成扣款。若已付款请稍候片刻或刷新页面。"}
+              {order.paymentStatus === "closed" && "上一次支付未完成，已自动关闭。可重新发起支付。"}
+            </p>
+          </div>
+        )}
+
         <div className={styles.section}>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {canPay && (
+              <button
+                className={`${styles.btn} ${styles.btnPrimary}`}
+                style={{ background: accent }}
+                onClick={payNow}
+                disabled={busy === "pay"}
+              >
+                {busy === "pay"
+                  ? "跳转中…"
+                  : order.paymentStatus === "waiting"
+                  ? "继续支付"
+                  : `立即支付 ${formatCents(order.priceCents)}`}
+              </button>
+            )}
             {canStartCall && (
               <button
                 className={`${styles.btn} ${styles.btnPrimary}`}

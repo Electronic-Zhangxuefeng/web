@@ -67,9 +67,10 @@ type Order = {
 };
 
 type MatchRow = {
-  matchId: string;
-  score: string;
-  rank: number;
+  // 测试期间从 /api/mentors 返回所有学长，没有 matchId / score / rank
+  matchId?: string;
+  score?: string;
+  rank?: number;
   mentorId: string;
   school: string | null;
   college: string | null;
@@ -80,6 +81,19 @@ type MatchRow = {
   ratingAvg: string;
   reviewsCount: number;
   name: string;
+};
+
+type MentorListItem = {
+  id: string;
+  name: string;
+  school: string | null;
+  college: string | null;
+  major: string | null;
+  year: string | null;
+  bio: string | null;
+  tags: string[] | null;
+  ratingAvg: string;
+  reviewsCount: number;
 };
 
 type Earnings = {
@@ -114,11 +128,25 @@ export default function DashboardPage() {
         setOrders(ordersRes.orders);
 
         if (role === "parent") {
-          if (meRes.parentProfile) {
-            const m = await apiGet<{ matches: MatchRow[] }>("/api/matches").catch(() => ({
-              matches: [] as MatchRow[],
-            }));
-            if (!cancel) setMatches(m.matches);
+          // 测试阶段：先用 /api/mentors（所有学长），等匹配算法完善后再切回 /api/matches
+          const m = await apiGet<{ mentors: MentorListItem[] }>("/api/mentors").catch(() => ({
+            mentors: [] as MentorListItem[],
+          }));
+          if (!cancel) {
+            setMatches(
+              m.mentors.map((x) => ({
+                mentorId: x.id,
+                name: x.name,
+                school: x.school,
+                college: x.college,
+                major: x.major,
+                year: x.year,
+                bio: x.bio,
+                tags: x.tags,
+                ratingAvg: x.ratingAvg,
+                reviewsCount: x.reviewsCount,
+              }))
+            );
           }
         } else {
           const e = await apiGet<Earnings>("/api/mentors/me/earnings").catch(() => null);
@@ -259,10 +287,10 @@ function ParentOverview({
           </div>
         ) : (
           <div className={styles.grid2}>
-            {matches.slice(0, 4).map((m) => (
+            {matches.slice(0, 6).map((m) => (
               <Link
-                key={m.matchId}
-                href={`/dashboard/orders`}
+                key={m.mentorId}
+                href={`/dashboard/mentors/${m.mentorId}`}
                 className={styles.card}
                 style={{ textDecoration: "none" }}
               >
