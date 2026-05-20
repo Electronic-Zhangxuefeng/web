@@ -1,21 +1,24 @@
 import Link from "next/link";
 import styles from "./page.module.css";
 
-const STATS = [
+const WHY_REASONS = [
   {
-    big: "79.5%",
-    copy: "学生在填报志愿时感到迷茫。主因是对自己喜好不明确、对专业了解有限。",
-    src: "央视新闻 · 162 所高校 2,048 份问卷 (2023)",
+    title: "不只看分数线，更要看适不适合",
+    body:
+      "分数线告诉你「能不能报」，但兴趣、能力和专业真实内容，才决定孩子「适不适合读」。中青校媒调查显示，70.61% 的受访者认为选专业应考虑个人兴趣和特长，78.32% 的受访者建议选专业前先评估自己的喜好和优劣势。",
+    source: "中国青年报·中青校媒，2,048 份有效问卷，2023",
   },
   {
-    big: "79%",
-    copy: "受访大学生曾想过转专业。其中 60% 是因为本专业发展前景不及预期——而这本可以在填报前就问清楚。",
-    src: "中国青年报 · 2,002 人调查 (2016)",
+    title: "不把转专业当唯一后路",
+    body:
+      "79.0% 的受访者大学时想过转专业，但 76.0% 的受访者认为大学生转专业并不容易。与其入学后被动补救，不如选择前先问清楚。",
+    source: "中国青年报社会调查中心，2,002 人调查,2016",
   },
   {
-    big: "¥20,000",
-    copy: "是市面 IP 升学咨询的常见报价。央视调查显示志愿填报付费市场已接近 10 亿元。",
-    src: "央视新闻 · 2024 高考志愿填报市场调查",
+    title: "真正读过的人，能补上信息盲区",
+    body:
+      "调查显示，69% 的人在填报志愿时不了解专业的学习内容、就业方向和排名；毕业后，仅有 16% 的人觉得所学专业符合当初预期。专业实际学什么、课程压力如何、学院氛围怎样，往往只有在里面读过的人讲得清楚。",
+    source: "澎湃新闻 / iPIN 完美志愿，近千名大学生和白领调查，2016",
   },
 ];
 
@@ -34,46 +37,56 @@ const SCHOOLS = [
 const STEPS = [
   {
     num: "01",
-    title: "填问卷",
-    desc: "告诉我们目标院校、专业、最关心的维度——就业、保研、出国、转专业、生活体验……",
+    title: "明确需要",
+    desc: "将您的目标院校、专业倾向和最关心的维度告诉我们——学习内容、生活体验、保研考研、未来路径……",
   },
   {
     num: "02",
-    title: "看匹配",
-    desc: "平台呈现 3–5 位对口在读生，看他们的简介与历史评价，挑你看得顺眼的人。",
+    title: "查看匹配",
+    desc: "我们为您匹配 3–5 位在读同学，您可以查看他们的简介、擅长方向与历史评价，挑选最适合回答您问题的一位。",
   },
   {
     num: "03",
-    title: "下单沟通",
-    desc: "站内担保支付，站内视频/文字沟通——全程无需加任何微信。",
-  },
-  {
-    num: "04",
-    title: "双向评价",
-    desc: "完成咨询后才结算。双方互相打分，沉淀一个能被反复信任的网络。",
+    title: "预约咨询",
+    desc: "经由平台预约时间，通过一次视频交流完成咨询，把专业学习、院校氛围、适配风险和未来路径讲清楚。",
   },
 ];
 
-const REASONS = [
+const GUARANTEES = [
   {
-    icon: "对",
-    title: "对口在读",
-    desc: "密院学长讲密院，复旦中文讲中文。不是一个人讲所有专业的「通才独白」，而是上万对口在读生服务上百万家庭。",
+    icon: "真",
+    title: "真实身份",
+    desc: "采取邮箱 + 学生证等多重验证，同学的学校、专业、年级等信息将在确认后展示。",
   },
   {
-    icon: "担",
-    title: "平台担保",
-    desc: "咨询完成 + 双向打分后才结算给学长学姐。参考闲鱼、Airbnb 的担保账户模式——质量、隐私、售后，平台一体兜底。",
+    icon: "配",
+    title: "对口匹配",
+    desc: "根据孩子的目标院校、专业倾向和具体问题，个性化匹配合适的人，尽可能提供最相关的一手信息。",
   },
   {
-    icon: "匿",
-    title: "全程匿名",
-    desc: "站内沟通工具，无需加任何微信。学长学姐与家长之间不互留联系方式，隐私从首单到结案。",
+    icon: "界",
+    title: "回答有边界",
+    desc: "什么阶段的同学回答什么阶段的问题。低年级同学更适合讲真实学习体验，高年级同学和校友更适合讲保研、就业等路径。平台会尽量区分本人亲历、同届观察、转述经验和公开资料。",
   },
   {
-    icon: "普",
-    title: "普惠定价",
-    desc: "相对于市面 ¥20,000 一次的 IP 咨询，几乎是一杯奶茶 + 一顿便饭的距离。",
+    icon: "评",
+    title: "可评价反馈",
+    desc: "咨询完成后进行双向评价，平台持续筛选优质回答者，沉淀一个能被反复信任的真实经验网络。",
+  },
+];
+
+const FAQS = [
+  {
+    q: "问津是不是志愿填报辅导平台？",
+    a: "不是。问津不替代分数线分析、录取概率测算或正式志愿填报服务，而是补充真实就读体验、专业适配和院校差异信息。",
+  },
+  {
+    q: "学长学姐的回答会不会太主观？",
+    a: "个人经验一定有边界。问津会通过身份确认、问题匹配、信息来源说明和评价机制，降低单一经验偏差。",
+  },
+  {
+    q: "就业问题可以问吗？",
+    a: "可以问未来路径和常见方向，但不会让没有亲历经验的人随意预测就业。涉及就业问题时，会尽量匹配高年级学生、研究生或毕业校友，并结合公开资料说明来源。",
   },
 ];
 
@@ -87,12 +100,12 @@ export default function Home() {
           <span className={styles.brandSub}>FOR FAMILIES</span>
         </div>
         <nav className={styles.navLinks}>
-          <a href="#why">为什么选我们</a>
+          <a href="#why">为什么需要问津</a>
           <a href="#how">如何参与</a>
-          <a href="#about">关于</a>
+          <Link href="/questions">家长都在问</Link>
           <Link href="/auth?mode=login">登录</Link>
           <Link href="/questionnaire" className={styles.navBtn}>
-            立刻开始
+            看看能问谁
           </Link>
         </nav>
       </header>
@@ -106,46 +119,53 @@ export default function Home() {
               <span>首批 200 位对口在读生 · 6 月 9 日 17:00 上线</span>
             </div>
             <h1 className={styles.heroTitle}>
-              找个<span className={styles.heroAccent}>过来人</span>，
+              升学路上疑问多？
               <br />
-              问个明白。
+              找个<span className={styles.heroAccent}>过来人</span>，问个明白。
             </h1>
             <p className={styles.heroSub}>
-              匹配履历相近的学长学姐，花一顿饭钱，让 TA 为你深度解答
-              <br />
-              专业志愿、综评面试、大学生涯规划的种种疑惑。
+              根据孩子的目标院校、专业倾向和具体问题，匹配真正读过相关学校和专业的学长学姐，
+              帮您把专业学习、院校氛围、适配风险和未来路径讲清楚。
             </p>
             <div className={styles.heroCta}>
               <Link href="/questionnaire" className={styles.btnPrimary}>
-                填一份意向问卷 <span>→</span>
+                看看能问谁 <span>→</span>
               </Link>
-              <a href="#how" className={styles.btnGhost}>
-                看看流程
-              </a>
+              <Link href="/questions" className={styles.btnGhost}>
+                看看家长都在问什么
+              </Link>
             </div>
-            <div className={styles.heroMeta}>2 分钟 · 不需要注册 · 看到匹配再决定要不要付费</div>
+            <div className={styles.heroMeta}>2 分钟问卷 · 不需要注册 · 看到匹配再决定要不要付费</div>
           </div>
         </section>
 
         {/* Why this matters */}
-        <section className={styles.section}>
+        <section className={styles.section} id="why">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHead}>
               <div className={styles.sectionEyebrow}>Why it matters</div>
-              <h2 className={styles.sectionTitle}>填志愿这件事，本不该这么难</h2>
+              <h2 className={styles.sectionTitle}>为什么需要问津？</h2>
               <p className={styles.sectionSub}>
-                每年都有几十万家庭在专业选择上花掉数万元中介费，得到的却是脱离一线的「通才」建议。
-                你需要的，是一个真正读过这条路的人。
+                每年都有几十万家庭在专业选择上反复纠结。比起脱离一线的「通才」建议，
+                您更需要的是一位真正读过这条路的人。
               </p>
             </div>
-            <div className={styles.statGrid}>
-              {STATS.map((s) => (
-                <div key={s.big} className={styles.statCard}>
-                  <div className={styles.statBig}>{s.big}</div>
-                  <div className={styles.statCopy}>{s.copy}</div>
-                  <div className={styles.statSrc}>{s.src}</div>
+            <div className={styles.whyGrid}>
+              {WHY_REASONS.map((r) => (
+                <div key={r.title} className={styles.whyCard}>
+                  <h3 className={styles.whyTitle}>{r.title}</h3>
+                  <p className={styles.whyBody}>{r.body}</p>
+                  <div className={styles.whySrc}>来源：{r.source}</div>
                 </div>
               ))}
+            </div>
+            <div className={styles.whyClose}>
+              <p className={styles.whyCloseLine}>
+                问津致力于补充选择前最难获取的真实就读体验。
+              </p>
+              <p className={styles.whyClosePunch}>
+                <span className={styles.heroAccent}>先问清楚，再做打算。</span>
+              </p>
             </div>
           </div>
         </section>
@@ -155,9 +175,10 @@ export default function Home() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionHeadCenter}>
               <div className={styles.sectionEyebrow}>Coverage</div>
-              <h2 className={styles.sectionTitle}>首批覆盖院校</h2>
+              <h2 className={styles.sectionTitle}>覆盖学校广泛</h2>
               <p className={styles.sectionSub}>
-                持续扩展。每所院校配多位对口专业的在读学长学姐，覆盖从本科到博士。
+                覆盖热门院校与专业方向。每所院校配多位对口专业的在读学长学姐，覆盖从本科到博士。
+                若您的目标院校 / 专业暂未列出，可在问卷中提交需求继续匹配。
               </p>
             </div>
             <div className={styles.schoolWrap}>
@@ -178,9 +199,10 @@ export default function Home() {
           <div className={styles.sectionInner}>
             <div className={styles.sectionHead}>
               <div className={styles.sectionEyebrow}>How it works</div>
-              <h2 className={styles.sectionTitle}>从一个问题，到一通真实对话</h2>
+              <h2 className={styles.sectionTitle}>三步，从问题到答案</h2>
               <p className={styles.sectionSub}>
-                四步走完。中间不需要加任何微信，看到匹配的人再决定是否往下走。
+                不需要一开始就把问题想得很完整。告诉我们孩子的目标和疑问，
+                先看看能匹配到谁，再决定是否咨询。
               </p>
             </div>
             <div className={styles.stepsList}>
@@ -192,21 +214,30 @@ export default function Home() {
                 </div>
               ))}
             </div>
+            <div className={styles.priceHint}>
+              <div className={styles.priceHintTag}>关于价格</div>
+              <p className={styles.priceHintBody}>
+                <strong className={styles.priceHintNum}>¥150 起</strong>
+                ，先把一个关键问题问清楚。具体价格会根据咨询时长、匹配对象和问题复杂度有所不同；
+                您可在查看匹配对象后，再决定是否预约。
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Why us */}
-        <section className={styles.section} id="why">
+        {/* Guarantees */}
+        <section className={styles.section} id="guarantees">
           <div className={styles.sectionInner}>
             <div className={styles.sectionHead}>
-              <div className={styles.sectionEyebrow}>Why us</div>
-              <h2 className={styles.sectionTitle}>为什么选择问津</h2>
+              <div className={styles.sectionEyebrow}>What we guarantee</div>
+              <h2 className={styles.sectionTitle}>问津能保证什么？</h2>
               <p className={styles.sectionSub}>
-                我们不卖话术。卖的是真实经历——并替你把所有麻烦兜住。
+                真实体验有价值，但也有边界。问津不夸大、不包办、不替您做决定，
+                而是尽力保证信息来源真实、回答边界清楚、咨询过程透明。
               </p>
             </div>
             <div className={styles.reasonGrid}>
-              {REASONS.map((r) => (
+              {GUARANTEES.map((r) => (
                 <div key={r.title} className={styles.reasonCard}>
                   <div className={styles.reasonIcon}>{r.icon}</div>
                   <div>
@@ -219,19 +250,52 @@ export default function Home() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section className={styles.section} id="faq">
+          <div className={styles.sectionInner}>
+            <div className={styles.sectionHead}>
+              <div className={styles.sectionEyebrow}>FAQ</div>
+              <h2 className={styles.sectionTitle}>家长常问的几个问题</h2>
+              <p className={styles.sectionSub}>
+                这里先回答三个最常被问到的疑虑。更完整的 FAQ 会逐步整理。
+              </p>
+            </div>
+            <div className={styles.faqList}>
+              {FAQS.map((f) => (
+                <div key={f.q} className={styles.faqItem}>
+                  <div className={styles.faqQ}>
+                    <span className={styles.faqQTag}>Q</span>
+                    {f.q}
+                  </div>
+                  <div className={styles.faqA}>
+                    <span className={styles.faqATag}>A</span>
+                    {f.a}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Final CTA */}
         <section className={styles.finalCta}>
           <div className={styles.finalCtaInner}>
             <h2 className={styles.finalCtaTitle}>
-              你正在纠结的路，<br />
-              有人<span className={styles.heroAccent}>曾走过</span>。
+              先把一个问题问清楚。
+              <br />
+              你正在纠结的路，<span className={styles.heroAccent}>有人曾走过</span>。
             </h2>
             <p className={styles.finalCtaSub}>
-              先填一份意向问卷。两分钟，看到匹配的人再决定要不要付费。
+              两分钟意向问卷，看到匹配的人再决定要不要付费。
             </p>
-            <Link href="/questionnaire" className={styles.btnPrimary}>
-              填一份意向问卷 <span>→</span>
-            </Link>
+            <div className={styles.heroCta}>
+              <Link href="/questionnaire" className={styles.btnPrimary}>
+                看看能问谁 <span>→</span>
+              </Link>
+              <Link href="/questions" className={styles.btnGhost}>
+                看看家长都在问什么
+              </Link>
+            </div>
           </div>
         </section>
       </main>
@@ -252,8 +316,9 @@ export default function Home() {
             <p className={styles.footerColTitle}>产品</p>
             <div className={styles.footerCol}>
               <a href="#how">如何参与</a>
-              <a href="#why">为什么选我们</a>
-              <Link href="/questionnaire">填问卷</Link>
+              <a href="#guarantees">问津能保证什么</a>
+              <Link href="/questions">家长都在问什么</Link>
+              <Link href="/questionnaire">看看能问谁</Link>
               <Link href="/auth?mode=login">登录</Link>
             </div>
           </div>

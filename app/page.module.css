@@ -288,11 +288,70 @@
   font-size: 12px;
 }
 
+/* Why cards (reason + body + source) */
+.whyGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.whyCard {
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 26px 24px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+.whyTitle {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0 0 14px;
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+}
+.whyBody {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #4a4a45;
+  margin: 0 0 18px;
+  flex: 1;
+}
+.whySrc {
+  font-size: 12px;
+  color: #9a9a93;
+  line-height: 1.6;
+  padding-top: 14px;
+  border-top: 1px dashed #ececec;
+}
+.whyClose {
+  margin-top: 36px;
+  padding: 28px 32px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  text-align: center;
+}
+.whyCloseLine {
+  font-size: 15px;
+  color: #4a4a45;
+  margin: 0 0 8px;
+  line-height: 1.7;
+}
+.whyClosePunch {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
 /* Steps */
 .stepsList {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
 }
 .stepCard {
   border: 1px solid #ececec;
@@ -319,6 +378,93 @@
   line-height: 1.7;
   color: #6e6e68;
   margin: 0;
+}
+
+/* Price hint between steps and CTA */
+.priceHint {
+  margin-top: 28px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  background: #fafaf7;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+}
+.priceHintTag {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  background: var(--accent);
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.priceHintBody {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: #4a4a45;
+}
+.priceHintNum {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+/* FAQ */
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.faqItem {
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 22px 24px;
+  background: #ffffff;
+}
+.faqQ {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.faqA {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: #4a4a45;
+  line-height: 1.8;
+}
+.faqQTag,
+.faqATag {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 1px;
+}
+.faqQTag {
+  background: var(--accent);
+  color: #ffffff;
+}
+.faqATag {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* Reason cards */
@@ -470,11 +616,22 @@
     font-size: 24px;
   }
   .statGrid,
-  .stepsList {
+  .stepsList,
+  .whyGrid {
     grid-template-columns: 1fr;
   }
   .reasonGrid {
     grid-template-columns: 1fr;
+  }
+  .whyClose {
+    padding: 22px 20px;
+  }
+  .whyClosePunch {
+    font-size: 18px;
+  }
+  .priceHint {
+    flex-direction: column;
+    padding: 18px 20px;
   }
   .finalCta {
     padding: 64px 20px;

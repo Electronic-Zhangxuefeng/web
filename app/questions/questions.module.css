@@ -1,0 +1,152 @@
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.head {
+  padding: 80px 40px 56px;
+  border-bottom: 1px solid #ececec;
+  background: #fafaf7;
+}
+.headInner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.crumb {
+  margin-bottom: 24px;
+  font-size: 13px;
+}
+.crumb a {
+  color: #6e6e68;
+  text-decoration: none;
+}
+.crumb a:hover {
+  color: #b8472d;
+}
+.headTitle {
+  font-family: var(--serif);
+  font-size: 44px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0 0 18px;
+  letter-spacing: 0.005em;
+  line-height: 1.2;
+}
+.headSub {
+  font-size: 16px;
+  line-height: 1.75;
+  color: #4a4a45;
+  margin: 0 0 32px;
+  max-width: 680px;
+}
+.headCta {
+  display: flex;
+  gap: 12px;
+}
+
+.body {
+  padding: 64px 40px;
+}
+.bodyInner {
+  max-width: 1080px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.group {
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 32px;
+  background: #ffffff;
+  display: grid;
+  grid-template-columns: 1.1fr 2fr;
+  gap: 36px;
+  align-items: start;
+}
+.groupHead {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.groupTag {
+  align-self: flex-start;
+  padding: 4px 10px;
+  background: #fbeee9;
+  color: #b8472d;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.groupTitle {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f1f1f;
+  margin: 0;
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+}
+.groupDesc {
+  font-size: 13px;
+  color: #6e6e68;
+  margin: 0;
+  line-height: 1.7;
+}
+.groupList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.groupItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  background: #fafaf7;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #1f1f1f;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.groupItem:hover {
+  background: #fbeee9;
+  border-color: #ecd0c4;
+}
+.groupItemDot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b8472d;
+  margin-top: 9px;
+}
+
+@media (max-width: 760px) {
+  .head {
+    padding: 56px 20px 40px;
+  }
+  .headTitle {
+    font-size: 28px;
+  }
+  .headSub {
+    font-size: 14px;
+  }
+  .body {
+    padding: 40px 20px;
+  }
+  .group {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 24px;
+  }
+}
