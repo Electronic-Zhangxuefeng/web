@@ -95,6 +95,7 @@ function MentorProfileEditor({
     displayInitial:
       initialIntro.displayInitial ||
       (userName.trim().charAt(0) || ""),
+    displayTitle: initialIntro.displayTitle || "",
     bio: profile?.bio || "",
     tags: profile?.tags || [],
   });
@@ -127,6 +128,7 @@ function MentorProfileEditor({
       introCard: {
         ...intro,
         displayInitial: basic.displayInitial,
+        displayTitle: basic.displayTitle,
       },
     };
     if (proof.proofDataUrl) body.proofImageUrl = proof.proofDataUrl;

@@ -44,6 +44,7 @@ export default function OnboardingPage() {
     major: "",
     year: "",
     displayInitial: "",
+    displayTitle: "",
     bio: "",
     tags: [],
   });
@@ -92,6 +93,7 @@ export default function OnboardingPage() {
             merged.displayInitial ||
             (sessionUserName.trim().charAt(0)) ||
             "",
+          displayTitle: merged.displayTitle || "",
           bio: p.bio || "",
           tags: p.tags || [],
         });
@@ -153,6 +155,7 @@ export default function OnboardingPage() {
         ...intro,
         _lastStep: lastStep,
         displayInitial: basic.displayInitial,
+        displayTitle: basic.displayTitle,
       },
     };
     if (proof.proofDataUrl) body.proofImageUrl = proof.proofDataUrl;

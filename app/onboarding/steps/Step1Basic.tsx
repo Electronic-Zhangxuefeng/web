@@ -3,7 +3,7 @@
 import styles from "../onboarding.module.css";
 import { SchoolSelect } from "../components/SchoolSelect";
 import { CharCounter } from "../components/CharCounter";
-import { YEAR_OPTIONS } from "@/lib/intro-card-schema";
+import { YEAR_OPTIONS, DISPLAY_TITLE_OPTIONS } from "@/lib/intro-card-schema";
 
 export type Step1Data = {
   school: string;
@@ -11,6 +11,7 @@ export type Step1Data = {
   major: string;
   year: string;
   displayInitial: string;
+  displayTitle: "" | "学姐" | "学长";
   bio: string;
   tags: string[];
 };
@@ -80,13 +81,29 @@ export function Step1Basic({
         <div className={styles.fieldGroup}>
           <label className={styles.label}>化名展示首字</label>
           <input
-            className={styles.input}
+            className={`${styles.input} ${errors.displayInitial ? styles.inputError : ""}`}
             value={data.displayInitial}
             maxLength={2}
             onChange={(e) => onChange({ displayInitial: e.target.value })}
-            placeholder="例：王"
+            placeholder="例：郭"
           />
-          <span className={styles.hint}>家长看到的卡片会显示这一字 + 学校 + 专业</span>
+          <span className={styles.hint}>家长看到的卡片显示为「{data.displayInitial || "?"}{data.displayTitle || "学姐"}」</span>
+          {errors.displayInitial && <span className={styles.errorText}>{errors.displayInitial}</span>}
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label}>称呼</label>
+          <select
+            className={`${styles.select} ${errors.displayTitle ? styles.inputError : ""}`}
+            value={data.displayTitle}
+            onChange={(e) => onChange({ displayTitle: e.target.value as Step1Data["displayTitle"] })}
+          >
+            <option value="">请选择</option>
+            {DISPLAY_TITLE_OPTIONS.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+          {errors.displayTitle && <span className={styles.errorText}>{errors.displayTitle}</span>}
         </div>
       </div>
 
@@ -114,6 +131,8 @@ export function validateStep1(d: Step1Data): Partial<Record<keyof Step1Data, str
   if (!d.college.trim()) e.college = "请填写院系";
   if (!d.major.trim()) e.major = "请填写专业";
   if (!d.year.trim()) e.year = "请选择年级";
+  if (!d.displayInitial.trim()) e.displayInitial = "请填写化名首字";
+  if (!d.displayTitle) e.displayTitle = "请选择称呼";
   if (!d.bio.trim()) e.bio = "请填写自我介绍";
   return e;
 }

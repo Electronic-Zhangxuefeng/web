@@ -66,9 +66,13 @@ export const personalExpSchema = z.object({
 });
 export type PersonalExp = z.infer<typeof personalExpSchema>;
 
+export const DISPLAY_TITLE_OPTIONS = ["学姐", "学长"] as const;
+export type DisplayTitle = (typeof DISPLAY_TITLE_OPTIONS)[number];
+
 export const introCardSchema = z.object({
   _lastStep: z.number().int().min(0).max(3).default(0),
   displayInitial: z.string().max(2).default(""),
+  displayTitle: z.enum(["", ...DISPLAY_TITLE_OPTIONS]).default(""),
   schoolEval: schoolEvalSchema,
   personalExp: personalExpSchema,
 });
@@ -78,6 +82,7 @@ export function defaultIntroCard(): IntroCard {
   return introCardSchema.parse({
     _lastStep: 0,
     displayInitial: "",
+    displayTitle: "",
     schoolEval: {
       career: { score: 0, note: "" },
       teaching: { score: 0, note: "" },
@@ -120,6 +125,8 @@ export function mergeIntroCard(raw: unknown): IntroCard {
         : 0,
     displayInitial:
       typeof r.displayInitial === "string" ? r.displayInitial.slice(0, 2) : "",
+    displayTitle:
+      r.displayTitle === "学姐" || r.displayTitle === "学长" ? r.displayTitle : "",
     schoolEval: schoolEvalParsed.success ? schoolEvalParsed.data : base.schoolEval,
     personalExp: personalExpParsed.success ? personalExpParsed.data : base.personalExp,
   };
