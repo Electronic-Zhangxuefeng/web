@@ -212,14 +212,14 @@ function ParentOverview({
           <p className={styles.statValue}>{done.length}</p>
         </div>
         <div className={styles.card}>
-          <p className={styles.cardSub}>可咨询的学长</p>
+          <p className={styles.cardSub}>可咨询的学长学姐</p>
           <p className={styles.statValue}>{mentors.length}</p>
         </div>
       </div>
 
       <div className={styles.section}>
         <div className={styles.sectionHead}>
-          <h2 className={styles.sectionTitle}>学长 · 学姐</h2>
+          <h2 className={styles.sectionTitle}>学长学姐</h2>
         </div>
         {mentors.length === 0 ? (
           <div className={styles.emptyState}>
@@ -236,7 +236,7 @@ function ParentOverview({
               >
                 <div className={styles.cardBanner} style={{ background: accent }} />
                 <h3 className={styles.cardTitle}>
-                  {m.name || "匿名学长"} · {m.school || "—"}
+                  {m.name || "匿名学长学姐"} · {m.school || "—"}
                 </h3>
                 <p className={styles.cardSub}>
                   {m.major || "—"} · {m.year || "—"} · 评分 {Number(m.ratingAvg).toFixed(1)}
@@ -456,7 +456,7 @@ export function OrderStatusPill({ status }: { status: Order["status"] }) {
     completed: { label: "已通话", cls: styles.pillOk },
     reviewed: { label: "已完成", cls: styles.pillOk },
     cancelled_by_parent: { label: "家长取消", cls: styles.pillBad },
-    cancelled_by_mentor: { label: "学长取消", cls: styles.pillBad },
+    cancelled_by_mentor: { label: "学长学姐取消", cls: styles.pillBad },
   };
   const m = map[status];
   return <span className={`${styles.pill} ${m.cls}`}>{m.label}</span>;

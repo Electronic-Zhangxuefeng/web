@@ -60,7 +60,7 @@ export default function AdminMentorsPage() {
         <span className={styles.crumbCurrent}>学长学姐</span>
       </div>
       <div className={styles.content}>
-        <h1 className={styles.pageTitle}>已通过审核的学长 / 学姐</h1>
+        <h1 className={styles.pageTitle}>已通过审核的学长学姐</h1>
         <p className={styles.pageSub}>
           {mentors === null
             ? "加载中…"
@@ -87,7 +87,7 @@ export default function AdminMentorsPage() {
           <div className={styles.emptyState}>加载中…</div>
         ) : filtered && filtered.length === 0 ? (
           <div className={styles.emptyState}>
-            {mentors.length === 0 ? "暂无已通过审核的学长。" : "没有匹配的记录。"}
+            {mentors.length === 0 ? "暂无已通过审核的学长学姐。" : "没有匹配的记录。"}
           </div>
         ) : (
           <table className={styles.table}>

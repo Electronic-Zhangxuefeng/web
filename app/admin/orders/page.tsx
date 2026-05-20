@@ -40,7 +40,7 @@ const STATUS_LABEL: Record<OrderStatus, { label: string; cls: string }> = {
   completed: { label: "已通话", cls: "pillOk" },
   reviewed: { label: "已完成", cls: "pillOk" },
   cancelled_by_parent: { label: "家长取消", cls: "pillBad" },
-  cancelled_by_mentor: { label: "学长取消", cls: "pillBad" },
+  cancelled_by_mentor: { label: "学长学姐取消", cls: "pillBad" },
 };
 
 const PAY_LABEL: Record<PaymentStatus, { label: string; cls: string }> = {
@@ -157,11 +157,11 @@ export default function AdminOrdersPage() {
             <option value="completed">已通话</option>
             <option value="reviewed">已完成</option>
             <option value="cancelled_by_parent">家长取消</option>
-            <option value="cancelled_by_mentor">学长取消</option>
+            <option value="cancelled_by_mentor">学长学姐取消</option>
           </select>
           <input
             type="search"
-            placeholder="搜索家长 / 学长 / 主题…"
+            placeholder="搜索家长 / 学长学姐 / 主题…"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             className={styles.input}
@@ -180,7 +180,7 @@ export default function AdminOrdersPage() {
             <thead>
               <tr>
                 <th>家长</th>
-                <th>学长</th>
+                <th>学长学姐</th>
                 <th>主题</th>
                 <th>状态</th>
                 <th>支付</th>

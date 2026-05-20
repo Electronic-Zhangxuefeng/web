@@ -280,7 +280,7 @@ function MentorDetail({
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          placeholder="拒绝理由（拒绝时必填，学长会看到这条原因）"
+          placeholder="拒绝理由（拒绝时必填，学长学姐会看到这条原因）"
           className={styles.textarea}
           style={{ maxWidth: 520 }}
         />

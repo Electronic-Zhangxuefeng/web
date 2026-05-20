@@ -75,7 +75,7 @@ export function Step3PersonalExp({
     <div>
       <h1 className={styles.title}>差异化经历</h1>
       <p className={styles.subtitle}>
-        以下信息将展示在<strong>你的学长主页</strong>，是家长在该校多位学长里&ldquo;为什么选你&rdquo;的关键。
+        以下信息将展示在<strong>你的主页</strong>，是家长在该校多位学长学姐里&ldquo;为什么选你&rdquo;的关键。
         诚实最重要：&ldquo;暂无&rdquo;比注水更好。
       </p>
 

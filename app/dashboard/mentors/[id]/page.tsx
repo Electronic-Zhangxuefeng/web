@@ -267,7 +267,7 @@ export default function MentorDetailPage() {
             <h2 className={styles.sectionTitle}>可预约时段</h2>
           </div>
           {openSlots.length === 0 ? (
-            <div className={styles.emptyState}>这位学长暂时还没开放时段，过段时间再看看。</div>
+            <div className={styles.emptyState}>这位学长学姐暂时还没开放时段，过段时间再看看。</div>
           ) : (
             <div className={styles.card}>
               {dayKeys.map((dk) => (
@@ -318,7 +318,7 @@ export default function MentorDetailPage() {
                 style={{ display: "block", marginBottom: 8 }}
                 htmlFor="topic"
               >
-                想聊点什么？(给学长一个准备方向)
+                想聊点什么？(给学长学姐一个准备方向)
               </label>
               <textarea
                 id="topic"
