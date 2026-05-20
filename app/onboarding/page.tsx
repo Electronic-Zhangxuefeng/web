@@ -20,6 +20,7 @@ type MentorProfile = {
   college: string | null;
   major: string | null;
   year: string | null;
+  highSchool: string | null;
   bio: string | null;
   tags: string[] | null;
   reviewStatus: "draft" | "pending" | "approved" | "rejected";
@@ -43,6 +44,7 @@ export default function OnboardingPage() {
     college: "",
     major: "",
     year: "",
+    highSchool: "",
     displayInitial: "",
     displayTitle: "",
     bio: "",
@@ -89,6 +91,7 @@ export default function OnboardingPage() {
           college: p.college || "",
           major: p.major || "",
           year: p.year || "",
+          highSchool: p.highSchool || "",
           displayInitial:
             merged.displayInitial ||
             (sessionUserName.trim().charAt(0)) ||
@@ -149,6 +152,7 @@ export default function OnboardingPage() {
       college: basic.college,
       major: basic.major,
       year: basic.year,
+      highSchool: basic.highSchool,
       bio: basic.bio,
       tags: basic.tags,
       introCard: {

@@ -25,6 +25,7 @@ type MentorProfile = {
   college: string | null;
   major: string | null;
   year: string | null;
+  highSchool: string | null;
   bio: string | null;
   tags: string[] | null;
   reviewStatus: "draft" | "pending" | "approved" | "rejected";
@@ -92,6 +93,7 @@ function MentorProfileEditor({
     college: profile?.college || "",
     major: profile?.major || "",
     year: profile?.year || "",
+    highSchool: profile?.highSchool || "",
     displayInitial:
       initialIntro.displayInitial ||
       (userName.trim().charAt(0) || ""),
@@ -123,6 +125,7 @@ function MentorProfileEditor({
       college: basic.college,
       major: basic.major,
       year: basic.year,
+      highSchool: basic.highSchool,
       bio: basic.bio,
       tags: basic.tags,
       introCard: {

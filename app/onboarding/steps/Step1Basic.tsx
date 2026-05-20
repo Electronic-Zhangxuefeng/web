@@ -10,6 +10,7 @@ export type Step1Data = {
   college: string;
   major: string;
   year: string;
+  highSchool: string;
   displayInitial: string;
   displayTitle: "" | "学姐" | "学长";
   bio: string;
@@ -36,6 +37,19 @@ export function Step1Basic({
         <label className={styles.label}>学校</label>
         <SchoolSelect value={data.school} onChange={(v) => onChange({ school: v })} />
         {errors.school && <span className={styles.errorText}>{errors.school}</span>}
+      </div>
+
+      <div className={styles.fieldGroup}>
+        <label className={styles.label}>就读高中</label>
+        <input
+          className={`${styles.input} ${errors.highSchool ? styles.inputError : ""}`}
+          value={data.highSchool}
+          maxLength={60}
+          onChange={(e) => onChange({ highSchool: e.target.value })}
+          placeholder="例：人大附中"
+        />
+        <span className={styles.hint}>来自同一所高中的学弟学妹会优先看到你。</span>
+        {errors.highSchool && <span className={styles.errorText}>{errors.highSchool}</span>}
       </div>
 
       <div className={styles.grid2}>
@@ -128,6 +142,7 @@ export function Step1Basic({
 export function validateStep1(d: Step1Data): Partial<Record<keyof Step1Data, string>> {
   const e: Partial<Record<keyof Step1Data, string>> = {};
   if (!d.school.trim()) e.school = "请选择或填写学校";
+  if (!d.highSchool.trim()) e.highSchool = "请填写就读高中";
   if (!d.college.trim()) e.college = "请填写院系";
   if (!d.major.trim()) e.major = "请填写专业";
   if (!d.year.trim()) e.year = "请选择年级";
