@@ -31,9 +31,9 @@ const BENEFITS = [
     desc: "你愿意接的时间段，开放即可。不愿意接的家长可以直接拒绝，平台兜底。",
   },
   {
-    icon: "结",
-    title: "平台先垫资 · 通话后结算",
-    desc: "家长下单后由平台冻结款项。通话完成且双向确认后，再结算给你。",
+    icon: "金",
+    title: "半小时 100 起步",
+    desc: "比家教省心省力。下单即冻结款项，通话完成且双向确认后结算到账。",
   },
   {
     icon: "护",
@@ -52,7 +52,7 @@ const STEPS = [
 const REQS = [
   {
     title: "在读身份",
-    desc: "本科、硕士、博士、Gap year 在读均可。已毕业一年内会单独评估。",
+    desc: "本科、硕士、博士、Gap year 在读均可。",
   },
   {
     title: "首批覆盖院校",
@@ -69,10 +69,6 @@ const REQS = [
 ];
 
 const FAQ = [
-  {
-    q: "我能赚多少？",
-    a: "平台不在公开页面公布具体单价与抽成。审核通过后，你能在指路工作台看到每一单的真实到账金额——下单即冻结、通话完成即可结算。",
-  },
   {
     q: "时间投入怎么算？",
     a: "一单平均 30–45 分钟通话 + 极少量准备时间。档期完全由你自己开，不想接的时段直接不放。",
@@ -104,9 +100,8 @@ export default function MentorLanding() {
           <a href="#why">为什么参与</a>
           <a href="#how">如何加入</a>
           <a href="#faq">常见问题</a>
-          <Link href="/auth?role=mentor&mode=login">登录</Link>
-          <Link href="/auth?role=mentor&mode=register&redirect=/onboarding" className={styles.navBtn}>
-            立即报名
+          <Link href="/auth?role=mentor&mode=login" className={styles.navBtn}>
+            登录
           </Link>
         </nav>
       </header>
@@ -137,7 +132,6 @@ export default function MentorLanding() {
                 了解流程
               </a>
             </div>
-            <div className={styles.heroMeta}>不出微信 · 平台担保 · 完成才结算</div>
           </div>
         </section>
 
@@ -148,7 +142,7 @@ export default function MentorLanding() {
               <div className={styles.sectionEyebrow}>Why it matters</div>
               <h2 className={styles.sectionTitle}>这件事本不该这么难</h2>
               <p className={styles.sectionSub}>
-                每年都有家庭在专业选择上花掉数万元中介费，得到的却是脱离一线的&ldquo;通才&rdquo;建议。
+                每年都有家庭在专业选择上花掉数万元中介费，得到的却是脱离一线的建议。
                 你的真实经验，就是他们最需要的答案。
               </p>
             </div>
