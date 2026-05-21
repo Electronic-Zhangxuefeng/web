@@ -153,7 +153,7 @@ export default function WalletPage() {
             <p className={styles.cardSub}>待结算</p>
             <p className={styles.statValue}>{formatCents(earnings.pendingCents)}</p>
             <p className={styles.cardSub} style={{ marginTop: 8 }}>
-              未完成 / 待评价的订单
+              未完成的订单
             </p>
           </div>
           <div className={styles.card}>
@@ -251,6 +251,9 @@ export default function WalletPage() {
               申请提现
             </button>
           </div>
+          <p className={styles.cardSub} style={{ margin: "-4px 0 12px" }}>
+            余额满 {(minCents / 100).toFixed(0)} 元起可提现,由 admin 手工扫码转账,通常 1 ~ 2 个工作日到账。
+          </p>
           {!earnings.hasAlipayQr ? (
             <div className={styles.alertWarn}>
               <span>⏰</span>
