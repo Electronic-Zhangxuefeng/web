@@ -20,6 +20,9 @@ export const PRESET_SCHOOLS = [
   "上海中侨职业技术大学", "上海兴伟学院", "上海视觉艺术学院",
   // 中外合办大学
   "上海纽约大学", "昆山杜克大学",
+  // 香港八大公立
+  "香港大学", "香港中文大学", "香港科技大学", "香港理工大学",
+  "香港城市大学", "香港浸会大学", "香港岭南大学", "香港教育大学",
 ] as const;
 
 export type PresetSchool = (typeof PRESET_SCHOOLS)[number];

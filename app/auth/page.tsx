@@ -8,6 +8,19 @@ import { claimAnonymousProfile } from "@/lib/api";
 import { Suspense } from "react";
 import styles from "./auth.module.css";
 
+const HK_UNI_DOMAINS = [
+  "hku.hk", "cuhk.edu.hk", "ust.hk", "polyu.edu.hk", "polyu.hk",
+  "cityu.edu.hk", "hkbu.edu.hk", "ln.edu.hk", "ln.hk", "eduhk.hk",
+];
+
+function isEduEmail(email: string): boolean {
+  const lower = email.toLowerCase();
+  if (lower.endsWith(".edu.cn")) return true;
+  const domain = lower.split("@")[1];
+  if (!domain) return false;
+  return HK_UNI_DOMAINS.some((d) => domain === d || domain.endsWith("." + d));
+}
+
 function getSafeLocalRedirect(value: string | null) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
     return "/dashboard";
@@ -35,8 +48,8 @@ function AuthForm() {
 
   const validateEmail = () => {
     if (isMentor && mode === "register") {
-      if (!email.endsWith(".edu.cn")) {
-        setError("指路人注册需使用 .edu.cn 邮箱");
+      if (!isEduEmail(email)) {
+        setError("指路人注册需使用大陆 .edu.cn 或受支持的香港高校邮箱");
         return false;
       }
     }
