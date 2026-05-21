@@ -252,7 +252,7 @@ export default function WalletPage() {
             </button>
           </div>
           <p className={styles.cardSub} style={{ margin: "-4px 0 12px" }}>
-            余额满 {(minCents / 100).toFixed(0)} 元起可提现,由 admin 手工扫码转账,通常 1 ~ 2 个工作日到账。
+            余额满 {(minCents / 100).toFixed(0)} 元起可提现。
           </p>
           {!earnings.hasAlipayQr ? (
             <div className={styles.alertWarn}>
