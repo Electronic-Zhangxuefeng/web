@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { apiGet, formatDateTime, ApiError } from "@/lib/api";
 import styles from "../../dashboard/dashboard.module.css";
+import { MentorProfileView, type MentorFullProfile } from "../_components/MentorProfileView";
 
 type ApprovedMentor = {
   userId: string;
@@ -19,10 +20,35 @@ type ApprovedMentor = {
   createdAt: string;
 };
 
+type DetailResp = {
+  mentor: MentorFullProfile & {
+    reviewedAt: string | null;
+    ratingAvg: string;
+    reviewsCount: number;
+  };
+};
+
 export default function AdminMentorsPage() {
   const [mentors, setMentors] = useState<ApprovedMentor[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [q, setQ] = useState("");
+  const [detail, setDetail] = useState<DetailResp["mentor"] | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailErr, setDetailErr] = useState<string | null>(null);
+
+  const openDetail = async (userId: string) => {
+    setDetailLoading(true);
+    setDetailErr(null);
+    setDetail(null);
+    try {
+      const r = await apiGet<DetailResp>(`/api/admin/mentors/${userId}/detail`);
+      setDetail(r.mentor);
+    } catch (e) {
+      setDetailErr(e instanceof ApiError ? e.message : (e as Error).message);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
 
   useEffect(() => {
     let cancel = false;
@@ -103,7 +129,11 @@ export default function AdminMentorsPage() {
             </thead>
             <tbody>
               {filtered!.map((m) => (
-                <tr key={m.userId}>
+                <tr
+                  key={m.userId}
+                  onClick={() => openDetail(m.userId)}
+                  style={{ cursor: "pointer" }}
+                >
                   <td>
                     <div style={{ fontWeight: 500 }}>{m.name || "—"}</div>
                     <div style={{ fontSize: 12, color: "#9a9a93", marginTop: 2 }}>
@@ -151,6 +181,80 @@ export default function AdminMentorsPage() {
           </table>
         )}
       </div>
+
+      {(detail || detailLoading || detailErr) && (
+        <div
+          onClick={() => {
+            if (!detailLoading) {
+              setDetail(null);
+              setDetailErr(null);
+            }
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "flex-end",
+            zIndex: 100,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(720px, 100%)",
+              background: "#fff",
+              height: "100%",
+              overflowY: "auto",
+              padding: "24px 32px",
+              boxShadow: "-4px 0 16px rgba(0,0,0,0.12)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: 4,
+              }}
+            >
+              <h1 className={styles.pageTitle} style={{ margin: 0 }}>
+                {detail?.name || (detailLoading ? "加载中…" : "学长详情")}
+              </h1>
+              <button
+                onClick={() => {
+                  setDetail(null);
+                  setDetailErr(null);
+                }}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  fontSize: 20,
+                  cursor: "pointer",
+                  color: "#9a9a93",
+                  padding: "0 4px",
+                }}
+                aria-label="关闭"
+              >
+                ×
+              </button>
+            </div>
+            {detail && (
+              <p className={styles.pageSub}>
+                {detail.email} · 评分 {Number(detail.ratingAvg).toFixed(1)} ({detail.reviewsCount})
+                {detail.reviewedAt && ` · 通过于 ${formatDateTime(detail.reviewedAt)}`}
+              </p>
+            )}
+            {detailErr && <div className={styles.alertBad}>{detailErr}</div>}
+            {detail && <MentorProfileView mentor={detail} />}
+            {detailLoading && (
+              <div className={styles.emptyState} style={{ marginTop: 24 }}>
+                加载中…
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 }

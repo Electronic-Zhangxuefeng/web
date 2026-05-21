@@ -264,7 +264,7 @@ function MentorProfileEditor({
             onClick={onSaveDraft}
             disabled={saving !== null}
           >
-            {saving === "draft" ? "保存中…" : "保存草稿"}
+            {saving === "draft" ? "保存中…" : canSubmit ? "保存草稿" : "保存修改"}
           </button>
           {canSubmit && (
             <button
