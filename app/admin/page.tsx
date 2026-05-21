@@ -4,12 +4,32 @@ import { useEffect, useState } from "react";
 import { apiGet, apiSend, ApiError, formatDateTime } from "@/lib/api";
 import styles from "../dashboard/dashboard.module.css";
 
+type Dim = { note: string };
+type SchoolEval = {
+  career?: Dim;
+  teaching?: Dim;
+  life?: Dim;
+  care?: Dim;
+  practice?: Dim;
+  pros?: string;
+  cons?: string;
+};
+type BoolText = { had: boolean; text: string };
+type PersonalExp = {
+  paths?: string[];
+  research?: BoolText;
+  internship?: BoolText;
+  competition?: BoolText;
+  zongping?: BoolText;
+  program?: BoolText;
+  transfer?: BoolText;
+  supplement?: string;
+};
 type IntroCard = {
-  whyMajor?: string;
-  regretOrSurprise?: string;
-  fitFor?: string;
-  notFitFor?: string;
-  afterGraduation?: string;
+  displayInitial?: string;
+  displayTitle?: string;
+  schoolEval?: SchoolEval;
+  personalExp?: PersonalExp;
 };
 
 type PendingMentor = {
@@ -20,6 +40,7 @@ type PendingMentor = {
   college: string | null;
   major: string | null;
   year: string | null;
+  highSchool: string | null;
   bio: string | null;
   tags: string[] | null;
   introCard: IntroCard | null;
@@ -27,13 +48,31 @@ type PendingMentor = {
   updatedAt: string;
 };
 
-const INTRO_LABEL: Record<keyof IntroCard, string> = {
-  whyMajor: "为什么选这个专业",
-  regretOrSurprise: "最后悔 / 最惊喜的一件事",
-  fitFor: "什么样的学生适合",
-  notFitFor: "什么样的学生不建议",
-  afterGraduation: "大概的毕业去向",
+const SCHOOL_EVAL_LABEL: Array<{ key: keyof SchoolEval; label: string }> = [
+  { key: "career", label: "职业规划引导" },
+  { key: "teaching", label: "教学质量" },
+  { key: "life", label: "就读体验" },
+  { key: "care", label: "人文关怀" },
+  { key: "practice", label: "实践机会" },
+];
+
+const PATH_LABEL: Record<string, string> = {
+  postgrad_domestic: "保研 / 直博",
+  study_abroad: "出国留学",
+  kaoyan: "国内考研",
+  employment: "直接就业",
+  civil_exam: "考公 / 考编",
+  gap_other: "Gap / 其它",
 };
+
+const EXP_LABEL: Array<{ key: keyof PersonalExp; label: string }> = [
+  { key: "research", label: "科研" },
+  { key: "internship", label: "实习" },
+  { key: "competition", label: "竞赛" },
+  { key: "zongping", label: "综评 / 强基" },
+  { key: "program", label: "特殊项目 / 班型" },
+  { key: "transfer", label: "转专业" },
+];
 
 export default function AdminPendingPage() {
   const [mentors, setMentors] = useState<PendingMentor[] | null>(null);
@@ -205,13 +244,12 @@ function MentorDetail({
   };
 
   const card = mentor.introCard || {};
-  const fields: (keyof IntroCard)[] = [
-    "whyMajor",
-    "regretOrSurprise",
-    "fitFor",
-    "notFitFor",
-    "afterGraduation",
-  ];
+  const schoolEval = card.schoolEval || {};
+  const personalExp = card.personalExp || {};
+  const displayName =
+    card.displayInitial && card.displayTitle
+      ? `${card.displayInitial}${card.displayTitle}`
+      : null;
 
   return (
     <div>
@@ -231,6 +269,8 @@ function MentorDetail({
         <KV label="院系" value={mentor.college} />
         <KV label="专业" value={mentor.major} />
         <KV label="年级" value={mentor.year} />
+        <KV label="高中" value={mentor.highSchool} />
+        <KV label="化名" value={displayName} />
         <KV label="标签" value={mentor.tags?.join("、") || null} />
       </DetailSection>
 
@@ -238,15 +278,55 @@ function MentorDetail({
         <Para text={mentor.bio} />
       </DetailSection>
 
-      <DetailSection title="5 个问答">
-        {fields.map((k) => (
-          <div key={k} style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>
-              {INTRO_LABEL[k]}
-            </div>
-            <Para text={card[k] || null} />
+      <DetailSection title="学院评价">
+        {SCHOOL_EVAL_LABEL.map(({ key, label }) => (
+          <div key={key} style={{ marginBottom: 14 }}>
+            <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>{label}</div>
+            <Para text={(schoolEval[key] as Dim | undefined)?.note || null} />
           </div>
         ))}
+        <div style={{ marginTop: 18 }}>
+          <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>优势</div>
+          <Para text={schoolEval.pros || null} />
+        </div>
+        <div style={{ marginTop: 14 }}>
+          <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>不足</div>
+          <Para text={schoolEval.cons || null} />
+        </div>
+      </DetailSection>
+
+      <DetailSection title="个人经历">
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>当前路径</div>
+          <Para
+            text={
+              personalExp.paths && personalExp.paths.length > 0
+                ? personalExp.paths.map((p) => PATH_LABEL[p] || p).join("、")
+                : null
+            }
+          />
+        </div>
+        {EXP_LABEL.map(({ key, label }) => {
+          const v = personalExp[key] as BoolText | undefined;
+          return (
+            <div key={key as string} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>
+                {label}{v?.had ? "(有)" : "(无)"}
+              </div>
+              {v?.had ? (
+                <Para text={v.text || null} />
+              ) : (
+                <span style={{ color: "#9a9a93", fontSize: 13 }}>—</span>
+              )}
+            </div>
+          );
+        })}
+        {personalExp.supplement && (
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 12, color: "#9a9a93", marginBottom: 4 }}>补充</div>
+            <Para text={personalExp.supplement} />
+          </div>
+        )}
       </DetailSection>
 
       <DetailSection title="学籍证明">
