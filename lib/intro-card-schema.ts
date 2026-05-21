@@ -29,7 +29,6 @@ export const YEAR_OPTIONS = [
 ] as const;
 
 const dimensionSchema = z.object({
-  score: z.number().int().min(0).max(5).default(0), // 历史字段，保留以兼容旧数据
   note: z.string().max(150).default(""),
 });
 
@@ -84,11 +83,11 @@ export function defaultIntroCard(): IntroCard {
     displayInitial: "",
     displayTitle: "",
     schoolEval: {
-      career: { score: 0, note: "" },
-      teaching: { score: 0, note: "" },
-      life: { score: 0, note: "" },
-      care: { score: 0, note: "" },
-      practice: { score: 0, note: "" },
+      career: { note: "" },
+      teaching: { note: "" },
+      life: { note: "" },
+      care: { note: "" },
+      practice: { note: "" },
       pros: "",
       cons: "",
     },

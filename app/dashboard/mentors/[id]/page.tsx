@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { apiGet, apiSend, formatDateTime } from "@/lib/api";
 import styles from "../../dashboard.module.css";
 
-type Dim = { score: number; note: string };
+type Dim = { note: string };
 type SchoolEval = {
   career: Dim;
   teaching: Dim;
