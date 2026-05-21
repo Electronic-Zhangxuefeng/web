@@ -23,6 +23,7 @@ const nav = [
   { href: "/admin/mentors", label: "学长学姐", match: (p: string) => p.startsWith("/admin/mentors") },
   { href: "/admin/parents", label: "家长", match: (p: string) => p.startsWith("/admin/parents") },
   { href: "/admin/orders", label: "订单", match: (p: string) => p.startsWith("/admin/orders") },
+  { href: "/admin/withdrawals", label: "提现", match: (p: string) => p.startsWith("/admin/withdrawals") },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

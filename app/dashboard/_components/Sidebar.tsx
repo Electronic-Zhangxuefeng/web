@@ -22,6 +22,7 @@ const mentorNav: NavItem[] = [
   { href: "/dashboard/profile", label: "资料与审核", matches: (p) => p.startsWith("/dashboard/profile") },
   { href: "/dashboard/slots", label: "时间档期", matches: (p) => p.startsWith("/dashboard/slots") },
   { href: "/dashboard/orders", label: "订单", matches: (p) => p.startsWith("/dashboard/orders") },
+  { href: "/dashboard/wallet", label: "钱包", matches: (p) => p.startsWith("/dashboard/wallet") },
 ];
 
 export function Sidebar({
